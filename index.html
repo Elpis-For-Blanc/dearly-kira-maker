@@ -23,11 +23,17 @@
 .font-sample-label{font-size:11px;font-weight:700;color:#a77996}
 .font-sample-text{font-size:17px;line-height:1.5;overflow-wrap:anywhere}
 @media(max-width:390px){.font-examples{grid-template-columns:1fr}}
+
+/* Frame miniatures use actual border geometry, not emoji drawings. */
+.frame-thumb.thumb-glass{background:linear-gradient(145deg,#fff,#faeaf3 45%,#f2d6e9 75%,#fff);border:5px solid #fff;box-shadow:inset 0 0 0 2px #db9cbd,0 0 0 1px #f0bed5}
+.frame-thumb.thumb-glass:before{content:"";position:absolute;inset:4px;border:1px solid #fff;border-radius:2px}
+.frame-thumb.thumb-film{background:linear-gradient(145deg,#fce7f1,#f9f0fa);border:6px solid #cf85ae;box-shadow:inset 0 0 0 2px #fff}
+.frame-thumb.thumb-film:before{content:"";position:absolute;left:-5px;right:-5px;top:-4px;bottom:-4px;background:repeating-linear-gradient(90deg,#fff 0 3px,transparent 3px 8px) top / 100% 3px no-repeat,repeating-linear-gradient(90deg,#fff 0 3px,transparent 3px 8px) bottom / 100% 3px no-repeat;pointer-events:none}
 </style>
 </head>
 <body>
 <div class="shell">
-<header class="top"><div class="brand"><div class="brand-eyebrow">♡ LITTLE SPARKLES, BIG LOVE ♡</div><h1>DEARLY <em>Kira</em> Maker <span style="font-size:21px">✧</span></h1><p class="subtitle">반짝반짝, 세상에 하나뿐인 움직이는 포토카드 🎀</p></div><button class="pill" id="helpBtn">♡ 사용 방법</button></header>
+<header class="top"><div class="brand"><h1>DEARLY <em>Kira</em> Maker <span style="font-size:21px">✧</span></h1><p class="subtitle">반짝반짝, 세상에 하나뿐인 움직이는 포토카드 🎀</p></div><button class="pill" id="helpBtn">♡ 사용 방법</button></header>
 <main class="workspace">
 <section class="editor" aria-label="포토카드 편집 도구">
 <div class="tabs" role="tablist">
@@ -61,7 +67,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const canvas=$('preview'), g=canvas.getContext('2d');
-const frames=[['bloom','블룸 가든','🌼'],['gingham','베리 깅엄','🍒'],['holo','홀로그램','🌈'],['classic','클래식','💌'],['hearts','러블리 하트','💗'],['star','스타 샤워','⭐'],['pearl','펄 비즈','🫧'],['polaroid','폴라로이드','📷']];
+const frames=[['bloom','글래스 라인',''],['gingham','베리 깅엄','🍒'],['holo','홀로그램','🌈'],['classic','클래식','💌'],['hearts','러블리 하트','💗'],['star','스타 샤워','⭐'],['pearl','필름 스트립',''],['polaroid','폴라로이드','📷']];
 const stickers=['🎀','💗','💖','🩷','💝','💕','✨','⭐','🌟','🌸','🌷','🌹','🍓','🍒','🦋','👑','🪽','🐰','🐻','🧸','🍬','🧁','🍭','💎','💌','🫧','🍀','🎧','🐱','🐾','🍰','🎠','🎶','🕊️','🍡','🪞'];
 const effectDefinitions=[['sparkle','✨','반짝반짝','별빛이 톡톡 켜지고 꺼져요'],['hearts','💗','플로팅 하트','작은 하트들이 둥둥 떠올라요'],['glitter','🌟','글리터 레인','반짝이는 펄이 흩날려요'],['holo','🌈','홀로그램 스윕','무지개 빛이 카드 위를 지나가요'],['glow','💫','소프트 글로우','카드 위에 부드러운 빛이 밝아졌다 어두워져요']];
 // Font families use Korean web fonts when available; distinct installed fallbacks cover offline browsers.
@@ -159,32 +165,66 @@ function drawGlow(c,H,t){
  }
  c.restore();
 }
-function bloomFlower(c,x,y,scale,col,rotation=0){
- c.save();c.translate(x,y);c.rotate(rotation);c.shadowColor=rgba(col,.22);c.shadowBlur=5*scale;
- for(let j=0;j<5;j++){c.save();c.rotate(j*Math.PI*2/5);c.fillStyle='#fffdfb';c.strokeStyle=rgba(col,.72);c.lineWidth=1.5*scale;c.beginPath();c.ellipse(0,-8*scale,5.8*scale,9.2*scale,0,0,Math.PI*2);c.fill();c.stroke();c.restore()}
- c.shadowBlur=0;c.fillStyle=col;c.beginPath();c.arc(0,0,5.2*scale,0,Math.PI*2);c.fill();c.fillStyle='#fff9dd';c.beginPath();c.arc(-1.5*scale,-1.8*scale,1.9*scale,0,Math.PI*2);c.fill();c.restore();
-}
-function bloomBorder(c,H,color){
- c.save();c.strokeStyle='#fffaf9';c.lineWidth=37;roundedRect(c,18,18,W-36,H-36,20);c.stroke();
- c.strokeStyle=rgba(color,.73);c.lineWidth=5;roundedRect(c,21,21,W-42,H-42,17);c.stroke();
- c.strokeStyle=rgba(color,.30);c.lineWidth=1.6;roundedRect(c,34,34,W-68,H-68,12);c.stroke();
- c.setLineDash([2,10]);c.lineWidth=2;c.strokeStyle=rgba(color,.53);roundedRect(c,26,26,W-52,H-52,14);c.stroke();c.setLineDash([]);
- // Small botanicals in the outer white border, keeping photographs unobstructed.
- for(let i=0;i<8;i++){
-  let x=74+i*(W-148)/7;
-  c.fillStyle=rgba(color,.40);for(const [leafX,leafY,rot] of [[x-13,19,-.6],[x+13,19,.6],[x-13,H-19,.6],[x+13,H-19,-.6]]){c.beginPath();c.ellipse(leafX,leafY,4.5,2.5,rot,0,7);c.fill()}
-  bloomFlower(c,x,18,.49,color,i*.3);bloomFlower(c,x,H-18,.49,color,-i*.3);
- }
- for(let i=0;i<Math.round((H-150)/72);i++){
-   let y=83+i*((H-166)/Math.max(1,Math.round((H-150)/72)-1));
-   bloomFlower(c,18,y,.49,color,i*.21);bloomFlower(c,W-18,y,.49,color,-i*.21);
- }
- for(const [x,y,rot] of [[26,26,-.4],[W-26,26,.4],[26,H-26,.4],[W-26,H-26,-.4]])bloomFlower(c,x,y,.95,color,rot);
+// Pure graphic border styles—no decorative illustrations.
+function glassLineBorder(c,H,color,t){
+ c.save();
+ const sheen=c.createLinearGradient(0,0,W,H);
+ sheen.addColorStop(0,'#fffdfd');
+ sheen.addColorStop(.25,rgba(color,.38));
+ sheen.addColorStop(.53,'#fff6fb');
+ sheen.addColorStop(.79,rgba(color,.62));
+ sheen.addColorStop(1,'#fff');
+ c.lineJoin='round';
+ // Frosted, layered edge: the photograph stays unobstructed.
+ c.strokeStyle=sheen;c.lineWidth=29;
+ roundedRect(c,15,15,W-30,H-30,19);c.stroke();
+ c.strokeStyle=rgba(color,.85);c.lineWidth=4;
+ roundedRect(c,14,14,W-28,H-28,19);c.stroke();
+ c.strokeStyle='rgba(255,255,255,.96)';c.lineWidth=5;
+ roundedRect(c,24,24,W-48,H-48,14);c.stroke();
+ c.strokeStyle=rgba(color,.34);c.lineWidth=1.5;
+ roundedRect(c,31,31,W-62,H-62,10);c.stroke();
+ // A subtle glass reflection along the top edge, no drawn motifs.
+ const reflected=c.createLinearGradient(33,22,W-33,22);
+ reflected.addColorStop(0,'rgba(255,255,255,.08)');
+ reflected.addColorStop(.35,'rgba(255,255,255,.9)');
+ reflected.addColorStop(.72,'rgba(255,255,255,.18)');
+ reflected.addColorStop(1,'rgba(255,255,255,.56)');
+ c.strokeStyle=reflected;c.lineWidth=2;
+ c.beginPath();c.moveTo(42,20);c.lineTo(W-42,20);c.stroke();
  c.restore();
 }
-function drawFrame(c,H,t){const a=state.accent;const opaque=rgba(a,.88);c.save();let grad=c.createLinearGradient(0,0,W,H);grad.addColorStop(0,'#fff');grad.addColorStop(.45,a);grad.addColorStop(1,'#fff');if(state.frame==='polaroid'){c.fillStyle='#fffdfb';c.beginPath();c.rect(0,0,W,31);c.rect(0,0,32,H);c.rect(W-32,0,32,H);c.rect(0,H-97,W,97);c.fill();c.strokeStyle=a;c.lineWidth=3;c.strokeRect(16,16,W-32,H-32);c.fillStyle=opaque;c.textAlign='center';c.font='italic 30px Georgia,serif';c.fillText(state.polaroidCaption??'sweetest memory ♡',W/2,H-43,W-90)}else if(state.frame==='bloom'){bloomBorder(c,H,a)}
+function filmStripBorder(c,H,color){
+ c.save();
+ c.lineJoin='round';
+ // Classic film edge with uniform rectangular sprocket cutouts.
+ c.strokeStyle=rgba(color,.93);c.lineWidth=35;
+ roundedRect(c,18,18,W-36,H-36,14);c.stroke();
+ c.strokeStyle='rgba(255,255,255,.84)';c.lineWidth=2;
+ roundedRect(c,29,29,W-58,H-58,7);c.stroke();
+ c.strokeStyle='rgba(255,255,255,.5)';c.lineWidth=2;
+ roundedRect(c,4,4,W-8,H-8,18);c.stroke();
+ // Precise, evenly spaced perforations, not illustrative decoration.
+ c.fillStyle='#fffafc';
+ const nTop=Math.max(1,Math.floor((W-66)/32));
+ const tw=(W-72)/nTop;
+ for(let i=0;i<nTop;i++){
+  let x=36+i*tw+tw/2-5.5;
+  roundedRect(c,x,5,11,6,2);c.fill();
+  roundedRect(c,x,H-11,11,6,2);c.fill();
+ }
+ const nSide=Math.max(1,Math.floor((H-66)/32));
+ const sh=(H-72)/nSide;
+ for(let i=0;i<nSide;i++){
+  let y=36+i*sh+sh/2-5.5;
+  roundedRect(c,5,y,6,11,2);c.fill();
+  roundedRect(c,W-11,y,6,11,2);c.fill();
+ }
+ c.restore();
+}
+function drawFrame(c,H,t){const a=state.accent;const opaque=rgba(a,.88);c.save();let grad=c.createLinearGradient(0,0,W,H);grad.addColorStop(0,'#fff');grad.addColorStop(.45,a);grad.addColorStop(1,'#fff');if(state.frame==='polaroid'){c.fillStyle='#fffdfb';c.beginPath();c.rect(0,0,W,31);c.rect(0,0,32,H);c.rect(W-32,0,32,H);c.rect(0,H-97,W,97);c.fill();c.strokeStyle=a;c.lineWidth=3;c.strokeRect(16,16,W-32,H-32);c.fillStyle=opaque;c.textAlign='center';c.font='italic 30px Georgia,serif';c.fillText(state.polaroidCaption??'sweetest memory ♡',W/2,H-43,W-90)}else if(state.frame==='bloom'){glassLineBorder(c,H,a,t)}
 else if(state.frame==='gingham'){ginghamBorder(c,H,a)}
-else if(state.frame==='holo'){let gg=c.createLinearGradient(W*(t%1),0,W*(t%1)+W,H);['#ef96cc','#b9afff','#9bdae9','#ffeead','#ffa9c6','#d8b4ff'].forEach((color,i)=>gg.addColorStop(i/5,color));c.strokeStyle=gg;c.lineWidth=30;roundedRect(c,15,15,W-30,H-30,18);c.stroke();c.strokeStyle='#fff';c.lineWidth=5;roundedRect(c,24,24,W-48,H-48,12);c.stroke()}else if(state.frame==='classic'){c.strokeStyle='#fff';c.lineWidth=22;roundedRect(c,13,13,W-26,H-26,15);c.stroke();c.strokeStyle=opaque;c.lineWidth=5;roundedRect(c,11,11,W-22,H-22,13);c.stroke();c.strokeStyle=rgba(a,.45);c.lineWidth=2;roundedRect(c,25,25,W-50,H-50,11);c.stroke();for(let [x,y] of [[32,32],[W-32,32],[32,H-32],[W-32,H-32]]){c.fillStyle='#fff';heartPath(c,x,y,17);c.fill();c.stroke()}}else if(state.frame==='hearts'){c.strokeStyle='#fff';c.lineWidth=23;roundedRect(c,13,13,W-26,H-26,16);c.stroke();c.strokeStyle=a;c.lineWidth=5;roundedRect(c,20,20,W-40,H-40,13);c.stroke();c.fillStyle=a;for(let x=38;x<W-20;x+=42)for(let y of [15,H-15]){heartPath(c,x,y,17);c.fill()}for(let y=56;y<H-34;y+=42)for(let x of [14,W-14]){heartPath(c,x,y,17);c.fill()}}else if(state.frame==='star'){c.strokeStyle=grad;c.lineWidth=27;roundedRect(c,13,13,W-26,H-26,15);c.stroke();c.strokeStyle='#fff';c.lineWidth=5;roundedRect(c,23,23,W-46,H-46,12);c.stroke();for(let k=0;k<25;k++){let p=k/25*2*(W+H),x=0,y=0;if(p<W){x=p;y=14}else if(p<W+H){x=W-14;y=p-W}else if(p<2*W+H){x=W-(p-W-H);y=H-14}else{x=14;y=H-(p-2*W-H)}c.fillStyle=k%2?a:'#fff';starPath(c,x,y,7+(k%3)*3,4,.3);c.fill()}}else if(state.frame==='pearl'){c.strokeStyle='#fff';c.lineWidth=27;roundedRect(c,13,13,W-26,H-26,16);c.stroke();c.strokeStyle=a;c.lineWidth=4;roundedRect(c,22,22,W-44,H-44,14);c.stroke();for(let k=0;k<70;k++){let p=k/70*2*(W+H),x=0,y=0;if(p<W){x=p;y=14}else if(p<W+H){x=W-14;y=p-W}else if(p<2*W+H){x=W-(p-W-H);y=H-14}else{x=14;y=H-(p-2*W-H)}c.fillStyle='#fff';c.strokeStyle=rgba(a,.75);c.lineWidth=1;c.beginPath();c.arc(x,y,4.9,0,7);c.fill();c.stroke()}}c.restore()}
+else if(state.frame==='holo'){let gg=c.createLinearGradient(W*(t%1),0,W*(t%1)+W,H);['#ef96cc','#b9afff','#9bdae9','#ffeead','#ffa9c6','#d8b4ff'].forEach((color,i)=>gg.addColorStop(i/5,color));c.strokeStyle=gg;c.lineWidth=30;roundedRect(c,15,15,W-30,H-30,18);c.stroke();c.strokeStyle='#fff';c.lineWidth=5;roundedRect(c,24,24,W-48,H-48,12);c.stroke()}else if(state.frame==='classic'){c.strokeStyle='#fff';c.lineWidth=22;roundedRect(c,13,13,W-26,H-26,15);c.stroke();c.strokeStyle=opaque;c.lineWidth=5;roundedRect(c,11,11,W-22,H-22,13);c.stroke();c.strokeStyle=rgba(a,.45);c.lineWidth=2;roundedRect(c,25,25,W-50,H-50,11);c.stroke();for(let [x,y] of [[32,32],[W-32,32],[32,H-32],[W-32,H-32]]){c.fillStyle='#fff';heartPath(c,x,y,17);c.fill();c.stroke()}}else if(state.frame==='hearts'){c.strokeStyle='#fff';c.lineWidth=23;roundedRect(c,13,13,W-26,H-26,16);c.stroke();c.strokeStyle=a;c.lineWidth=5;roundedRect(c,20,20,W-40,H-40,13);c.stroke();c.fillStyle=a;for(let x=38;x<W-20;x+=42)for(let y of [15,H-15]){heartPath(c,x,y,17);c.fill()}for(let y=56;y<H-34;y+=42)for(let x of [14,W-14]){heartPath(c,x,y,17);c.fill()}}else if(state.frame==='star'){c.strokeStyle=grad;c.lineWidth=27;roundedRect(c,13,13,W-26,H-26,15);c.stroke();c.strokeStyle='#fff';c.lineWidth=5;roundedRect(c,23,23,W-46,H-46,12);c.stroke();for(let k=0;k<25;k++){let p=k/25*2*(W+H),x=0,y=0;if(p<W){x=p;y=14}else if(p<W+H){x=W-14;y=p-W}else if(p<2*W+H){x=W-(p-W-H);y=H-14}else{x=14;y=H-(p-2*W-H)}c.fillStyle=k%2?a:'#fff';starPath(c,x,y,7+(k%3)*3,4,.3);c.fill()}}else if(state.frame==='pearl'){filmStripBorder(c,H,a)}c.restore()}
 function drawDecor(c,H,t){let power=state.power;if(state.effects.hearts){c.save();for(let i=0;i<13;i++){let x=20+rnd(i+3)*(W-40),spd=.27+rnd(i+18)*.32,y=H*(1.1-((rnd(i+23)+t*spd)%1.3)),sz=10+rnd(i+31)*20;let fade=Math.sin(Math.PI*clamp(y/H,0,1));c.fillStyle=rgba(i%3===0?'#fff':state.accent,Math.max(0,.22+fade*.36)*power);heartPath(c,x,y,sz);c.fill()}c.restore()}if(state.effects.glitter){c.save();for(let i=0;i<68;i++){let x=rnd(i+102)*W,y=((rnd(i+201)+t*(.3+rnd(i+132)*.43))%1)*H;let size=1.1+rnd(i+343)*3.4;c.globalAlpha=(.3+rnd(i+66)*.58)*power;c.fillStyle=i%4?'#fff':state.accent;c.beginPath();c.arc(x,y,size,0,7);c.fill()}c.restore()}if(state.effects.sparkle){c.save();for(let i=0;i<37;i++){let x=22+rnd(i+43)*(W-44),y=22+rnd(i+67)*(H-44),phase=t*2*Math.PI*(i%3+1)+rnd(i+99)*Math.PI*2;let visible=Math.pow(Math.max(0,(Math.sin(phase)+1)/2),3),s=(4+rnd(i+88)*10)*visible*(.55+power);c.globalAlpha=visible*power*.95;c.fillStyle=i%3===0?state.accent:'#fff';c.shadowColor='#fff';c.shadowBlur=5;starPath(c,x,y,s,4,.10);c.fill()}c.restore()}}
 function drawObjects(c,H,selection){for(const type of ['stickers','texts'])for(const obj of state[type]){const x=obj.x*W,y=obj.y*H;c.save();c.translate(x,y);c.rotate((obj.rot||0)*Math.PI/180);c.textAlign='center';c.textBaseline='middle';if(type==='stickers'){if(obj.imageData){const img=getStickerImage(obj.imageData);if(img){let {w,h}=stickerDimensions(obj);c.drawImage(img,-w/2,-h/2,w,h)}}else{c.font=`${obj.size}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`;c.fillText(obj.emoji||'🎀',0,0)}}else{c.font=textFont(obj);let lines=(obj.value||'').split('\n');c.lineJoin='round';c.lineWidth=Math.max(2,obj.size*.13);c.strokeStyle=obj.outline||'#ffffff';c.fillStyle=obj.color||'#bc638e';c.shadowColor=rgba('#865a7b',.22);c.shadowBlur=3;lines.forEach((line,i)=>{let yy=(i-(lines.length-1)/2)*obj.size*1.15;c.strokeText(line,0,yy,W*.85);c.fillText(line,0,yy,W*.85)})}c.restore();if(selection===obj.id){let dims=type==='sticker'?stickerDimensions(obj):{w:Math.max(60,Math.min(W*.85,(obj.value||'').length*obj.size*.66)),h:obj.size*1.4};c.save();c.translate(x,y);c.rotate((obj.rot||0)*Math.PI/180);c.setLineDash([6,4]);c.lineWidth=2;c.strokeStyle='#ba4e84';c.fillStyle='rgba(255,255,255,.05)';c.strokeRect(-dims.w/2-8,-dims.h/2-8,dims.w+16,dims.h+16);c.setLineDash([]);c.beginPath();c.arc(dims.w/2+8,-dims.h/2-8,5,0,7);c.fillStyle='#fff';c.fill();c.stroke();c.restore()}}}
 function drawScene(c,t,selection=false){const H=getH();c.save();c.fillStyle=state.bg;c.fillRect(0,0,W,H);drawPattern(c,H);drawPhoto(c,getPhotoRect(),t);drawGlow(c,H,t);drawHolo(c,H,t);drawFrame(c,H,t);drawObjects(c,H,selection?state.selected:null);drawDecor(c,H,t);c.restore()}
@@ -195,7 +235,7 @@ function tab(name){activeTab=name;document.querySelectorAll('.tab').forEach(e=>e
 function renderPresets(){
  $('presets').innerHTML=Object.entries(presets).map(([id,p])=>`<button type="button" class="color-button ${state.preset===id?'active':''}" data-preset="${id}" aria-label="${p.name} 색상 적용" aria-pressed="${state.preset===id?'true':'false'}"><i style="background:linear-gradient(135deg,${p.bg} 50%,${p.accent} 50%)"></i>${p.name}</button>`).join('');
 }
-function renderFrames(){$('frameList').innerHTML=frames.map(([id,name,ico])=>`<button class="frame-option ${id===state.frame?'active':''}" data-frame="${id}"><span class="frame-thumb" style="border-color:${id==='holo'?'#d9b5ff':id==='pearl'?'#d4e6eb':'#ffd0e1'}">${ico}</span>${name}</button>`).join('')}
+function renderFrames(){$('frameList').innerHTML=frames.map(([id,name,ico])=>`<button class="frame-option ${id===state.frame?'active':''}" data-frame="${id}"><span class="frame-thumb ${id==='bloom'?'thumb-glass':id==='pearl'?'thumb-film':''}" style="border-color:${id==='holo'?'#d9b5ff':id==='pearl'?'#cc84ab':id==='bloom'?'#d5a1ba':'#ffd0e1'}">${ico}</span>${name}</button>`).join('')}
 function renderStickers(){$('stickerList').innerHTML=stickers.map((s,i)=>`<button class="sticker" data-sticker="${i}" aria-label="${s} 스티커 추가">${s}</button>`).join('')}
 function renderEffects(){$('effectList').innerHTML=effectDefinitions.map(([key,emoji,name,desc])=>`<label class="effect-card"><input type="checkbox" data-effect="${key}" ${state.effects[key]?'checked':''}><span class="effect-emoji">${emoji}</span><span class="effect-info"><strong>${name}</strong><small>${desc}</small></span></label>`).join('')}
 function syncControls(){document.querySelectorAll('[data-ratio]').forEach(e=>e.classList.toggle('active',state.ratio===e.dataset.ratio));document.querySelectorAll('[data-pattern]').forEach(e=>e.classList.toggle('active',state.pattern===e.dataset.pattern));renderPresets();$('photoZoom').value=state.photoZoom*100;$('photoZoomVal').textContent=Math.round(state.photoZoom*100)+'%';$('bgColor').value=state.bg;$('accentColor').value=state.accent;$('effectPower').value=state.power*100;$('effectPowerVal').textContent=Math.round(state.power*100)+'%';$('fontSelect').value=state.font;$('textColor').value=state.textColor;$('textOutline').value=state.textOutline;$('polaroidCaption').value=state.polaroidCaption??'sweetest memory ♡';$('polaroidField').style.display=state.frame==='polaroid'?'block':'none';resizeCanvas();renderFrames();renderEffects();renderCustomAssets();syncSelected()}
