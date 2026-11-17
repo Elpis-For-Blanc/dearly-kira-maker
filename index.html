@@ -29,6 +29,11 @@
 .frame-thumb.thumb-glass:before{content:"";position:absolute;inset:4px;border:1px solid #fff;border-radius:2px}
 .frame-thumb.thumb-film{background:linear-gradient(145deg,#fce7f1,#f9f0fa);border:6px solid #cf85ae;box-shadow:inset 0 0 0 2px #fff}
 .frame-thumb.thumb-film:before{content:"";position:absolute;left:-5px;right:-5px;top:-4px;bottom:-4px;background:repeating-linear-gradient(90deg,#fff 0 3px,transparent 3px 8px) top / 100% 3px no-repeat,repeating-linear-gradient(90deg,#fff 0 3px,transparent 3px 8px) bottom / 100% 3px no-repeat;pointer-events:none}
+
+.quality-field{padding:14px;border:1px solid #f1d5e4;border-radius:16px;background:linear-gradient(145deg,#fffafd,#fff1f8);margin:6px 0 17px}
+.quality-select{width:100%;height:45px;border:1px solid #e8c2d6;border-radius:12px;background:#fff;color:#78516b;font:inherit;font-size:14px;padding:0 11px;cursor:pointer}
+.quality-select:focus{outline:2px solid #eba2c6;outline-offset:2px}
+.quality-field .tip{margin-bottom:0;line-height:1.55}
 </style>
 </head>
 <body>
@@ -57,12 +62,12 @@
 <p class="tip">💡 스티커를 선택하면 미리보기 아래에서 크기·회전·복제·삭제를 할 수 있어요.</p><button class="btn secondary wide" id="clearStickers">스티커 모두 지우기</button></div>
 <div class="pane" id="pane-text"><h2 class="panel-title">문구 꾸미기 ✏️</h2><p class="panel-desc">최애 이름, 짧은 한마디, 기념일도 넣어봐요.<br>글자를 카드에서 자유롭게 움직일 수 있어요.</p><div class="field"><label class="field-label" for="newText">새 문구</label><div class="text-add"><input class="text-input" id="newText" maxlength="50" placeholder="예: MY LITTLE STAR"><button class="btn" id="addText">추가 +</button></div></div><div class="field"><div class="field-label">글꼴</div><select id="fontSelect" class="select"><option value="rounded">동글동글 · 주아</option><option value="serif">로맨틱 · 고운바탕</option><option value="hand">러블리 · 나눔손글씨</option><option value="mono">게임 · 도현</option></select></div><div class="font-examples" id="fontExamples"><button type="button" class="font-sample" data-font-example="rounded"><span class="font-sample-label">동글동글 기본</span><span class="font-sample-text" style="font-family:'Jua', sans-serif">하얀 토끼와 달빛의 이야기</span></button><button type="button" class="font-sample" data-font-example="serif"><span class="font-sample-label">로맨틱 세리프</span><span class="font-sample-text" style="font-family:'Gowun Batang', serif">우연으로 시작해,운명이 되고,마침내 서로의 구원이 된 사랑</span></button><button type="button" class="font-sample" data-font-example="hand"><span class="font-sample-label">러블리 손글씨</span><span class="font-sample-text" style="font-family:'Nanum Pen Script', cursive">달콤한 우연</span></button><button type="button" class="font-sample" data-font-example="mono"><span class="font-sample-label">게임 도트 느낌</span><span class="font-sample-text" style="font-family:'Do Hyeon', monospace">SWEET SERENDIPITY</span></button></div><p class="font-tip">♡ 선택 중인 문구의 글꼴도 바로 바뀌어요. 웹 글꼴은 인터넷 연결이 필요할 수 있어요.</p><div class="field"><div class="field-label">글자 색상</div><div class="color-settings"><label class="color-item"><input type="color" id="textColor" value="#bc638e">글자 색</label><label class="color-item"><input type="color" id="textOutline" value="#ffffff">테두리 색</label></div></div><p class="tip">💌 추가한 문구를 터치하면 아래에서 내용을 수정하거나 크기를 바꿀 수 있어요.</p></div>
 <div class="pane" id="pane-effects"><h2 class="panel-title">키라키라 반짝임 ✨</h2><p class="panel-desc">원하는 효과를 여러 개 선택할 수 있어요.<br>미리보기와 GIF에 똑같이 적용돼요!</p><div id="effectList"></div><div class="field" style="margin-top:19px"><label class="field-label" for="effectPower">반짝임 강도 <output id="effectPowerVal">70%</output></label><div class="range-row"><input id="effectPower" type="range" min="10" max="100" value="70" step="5"></div></div><button id="randomEffects" class="btn secondary wide">🎲 랜덤 반짝임 조합</button><p class="tip">GIF는 약 2초 동안 자연스럽게 반복되는 움직임으로 저장돼요.</p></div>
-<div class="pane" id="pane-save"><h2 class="panel-title">반짝이는 순간 저장 💌</h2><p class="panel-desc">꾸민 카드를 사진이나 움직이는 움짤로 저장해요.</p><div class="save-box"><strong>📸 PNG · 선명한 정지 이미지</strong><p>고화질로 저장해요. 장식과 선택한 효과가 한 장의 이미지에 담겨요.</p><button id="pngDownload" class="btn wide">PNG 이미지 저장 ♡</button></div><div class="save-box"><strong>✨ GIF · 움직이는 포토카드</strong><p>움직이는 약 2초짜리 GIF로 저장돼요. 사진 색감과 선명도를 우선해 만들어요.</p><button id="gifDownload" class="btn wide">움직이는 GIF 저장 ✧</button><div class="progress" id="gifProgress"><span id="gifBar"></span></div></div><div class="save-box" style="background:#fff"><strong>📁 프로젝트 보관함</strong><p>다음에 이어서 꾸밀 수 있도록 사진과 장식 설정을 파일로 저장해요.</p><div style="display:flex;gap:8px;margin-top:11px"><button id="projectSave" class="btn secondary" style="flex:1">작업 저장</button><button id="projectLoadBtn" class="btn ghost" style="flex:1">작업 불러오기</button><input type="file" id="projectFile" accept="application/json,.json" hidden></div></div><div class="status" id="status" aria-live="polite"></div></div>
+<div class="pane" id="pane-save"><h2 class="panel-title">반짝이는 순간 저장 💌</h2><p class="panel-desc">꾸민 카드를 사진이나 움직이는 움짤로 저장해요.</p><div class="field quality-field"><label class="field-label" for="animationQuality">✨ 움직이는 카드 저장 화질</label><select class="quality-select" id="animationQuality"><option value="1">기본 · 480px</option><option value="1.5" selected>고화질 · 720px (추천)</option><option value="2">초고화질 · 960px (용량 큼)</option></select><p class="tip">GIF와 움직이는 PNG에 적용돼요. 원본이 선명할수록 결과도 선명해요.</p></div><div class="save-box"><strong>📸 PNG · 선명한 정지 이미지</strong><p>고화질로 저장해요. 장식과 선택한 효과가 한 장의 이미지에 담겨요.</p><button id="pngDownload" class="btn wide">PNG 이미지 저장 ♡</button></div><div class="save-box"><strong>✨ GIF · 움직이는 포토카드</strong><p>움짤로 공유하기 좋아요. GIF 형식은 최대 256색이라 복잡한 일러스트의 그라데이션이 일부 단순해질 수 있어요.</p><button id="gifDownload" class="btn wide">고화질 GIF 저장 ✧</button><div class="progress" id="gifProgress"><span id="gifBar"></span></div></div><div class="save-box" style="background:linear-gradient(145deg,#fffafd,#f5f2ff)"><strong>💎 움직이는 PNG · 원본 색감 보존</strong><p>반짝이는 움직임과 일러스트 색상을 함께 보존해요. GIF보다 선명하지만 용량이 크고 일부 SNS에서는 정지 이미지로 표시될 수 있어요.</p><button id="apngDownload" class="btn wide">초선명 움직이는 PNG 저장 ♡</button><div class="progress" id="apngProgress"><span id="apngBar"></span></div></div><div class="save-box" style="background:#fff"><strong>📁 프로젝트 보관함</strong><p>다음에 이어서 꾸밀 수 있도록 사진과 장식 설정을 파일로 저장해요.</p><div style="display:flex;gap:8px;margin-top:11px"><button id="projectSave" class="btn secondary" style="flex:1">작업 저장</button><button id="projectLoadBtn" class="btn ghost" style="flex:1">작업 불러오기</button><input type="file" id="projectFile" accept="application/json,.json" hidden></div></div><div class="status" id="status" aria-live="polite"></div></div>
 </div></section>
 <section class="stage-wrap"><div class="stage-panel"><div class="stage-head"><div><strong>♡ MY KIRA CARD</strong><br><span>카드에서 사진·스티커·글자를 끌어 움직여요</span></div><span id="ratioLabel">3:4 · CARD</span></div><div class="stage-zone"><div class="canvas-holder"><canvas id="preview" width="480" height="640" aria-label="움직이는 포토카드 미리보기"></canvas><span class="animated-label">✧ LIVE</span></div></div><div class="selected-panel" id="selectedPanel"><div class="selected-title"><span id="selectedTitle">선택한 장식</span><span style="color:#d48eb0">✧ 편집 중</span></div><div class="field" id="selectedTextRow" style="display:none"><label class="field-label" for="selectedTextInput">문구 편집</label><input id="selectedTextInput" maxlength="50" class="text-input"></div><div class="field" style="margin-bottom:9px"><label class="field-label" for="selectedSize">크기 <output id="selectedSizeVal">60</output></label><div class="range-row"><input id="selectedSize" type="range" min="20" max="150" step="1"></div></div><div class="field" style="margin-bottom:0"><label class="field-label" for="selectedRotation">회전 <output id="selectedRotationVal">0°</output></label><div class="range-row"><input id="selectedRotation" type="range" min="-180" max="180" step="5"></div></div><div class="selected-actions"><button id="bringForward" class="btn ghost">앞으로</button><button id="duplicateSelected" class="btn secondary">복제 ♡</button><button id="deleteSelected" class="btn ghost">삭제</button></div></div><div class="stage-foot"><button class="btn secondary" id="quickSparkle">✨ 반짝임 바꾸기</button><button class="btn ghost" id="clearAll">↺ 처음부터</button><button class="btn" id="quickSave">💗 완성! 저장하기</button></div><div class="small-note">♡ 저장하는 파일에는 편집 도구나 선택 표시가 나오지 않아요.</div></div></section>
 </main><footer class="footer">DEARLY KIRA MAKER · MADE WITH LOVE & SPARKLES ♡</footer>
 </div><div class="notice" id="toast"></div>
-<div class="help-modal" id="helpModal" role="dialog" aria-modal="true"><div class="help-box"><h2>💌 DEARLY Kira Maker 사용법</h2><p>① <b>사진</b> 탭에서 이미지 업로드하기<br>② <b>프레임·스티커·문구</b>로 마음껏 꾸미기<br>③ 카드 위의 장식을 터치해서 이동·크기 조절하기<br>④ <b>반짝임</b> 탭에서 애니메이션 선택하기<br>⑤ <b>저장</b> 탭에서 PNG 또는 GIF 받기</p><p>사진이 없어도 샘플 카드로 먼저 연습할 수 있어요. 작업 저장 파일을 내려받으면 나중에 이어서 꾸밀 수 있어요! 🎀</p><button id="helpClose" class="btn">만들러 가기 ♡</button></div></div>
+<div class="help-modal" id="helpModal" role="dialog" aria-modal="true"><div class="help-box"><h2>💌 DEARLY Kira Maker 사용법</h2><p>① <b>사진</b> 탭에서 이미지 업로드하기<br>② <b>프레임·스티커·문구</b>로 마음껏 꾸미기<br>③ 카드 위의 장식을 터치해서 이동·크기 조절하기<br>④ <b>반짝임</b> 탭에서 애니메이션 선택하기<br>⑤ <b>저장</b> 탭에서 PNG, GIF 또는 움직이는 PNG 받기</p><p>사진이 없어도 샘플 카드로 먼저 연습할 수 있어요. 작업 저장 파일을 내려받으면 나중에 이어서 꾸밀 수 있어요! 🎀</p><button id="helpClose" class="btn">만들러 가기 ♡</button></div></div>
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
@@ -292,7 +297,7 @@ function syncSelected(){let obj=getSelected();$('selectedPanel').classList.toggl
 function addSticker(emoji){let o={id:++uid,type:'sticker',emoji,x:.5+(rnd(uid)*.20-.1),y:.48+(rnd(uid+55)*.24-.12),size:66,rot:0};state.stickers.push(o);state.selected=o.id;syncSelected();toast(emoji+' 스티커를 추가했어요!')}
 function addText(){const value=$('newText').value.trim();if(!value){toast('먼저 문구를 입력해 주세요 ♡');return}let o={id:++uid,type:'text',value,x:.5,y:.79,size:30,rot:0,font:state.font,color:state.textColor,outline:state.textOutline};state.texts.push(o);state.selected=o.id;$('newText').value='';syncSelected();toast('문구를 추가했어요 💌')}
 function hitTest(x,y){for(let obj of [...state.texts,...state.stickers].reverse()){let cx=obj.x*W,cy=obj.y*getH(),dx=x-cx,dy=y-cy,dims=obj.type==='sticker'?stickerDimensions(obj):{w:Math.min(W*.84,Math.max(76,(obj.value||'').length*obj.size*.66)),h:obj.size*1.4},ww=dims.w/2,hh=dims.h/2;if(Math.abs(dx)<ww+10&&Math.abs(dy)<hh+10)return obj}return null}
-function setPhotoFile(file){if(!file||!file.type.startsWith('image/')){toast('이미지 파일을 선택해 주세요.');return}if(file.size>25*1024*1024){toast('25MB 이하의 이미지를 선택해 주세요.');return}let reader=new FileReader();reader.onload=()=>{const im=new Image();im.onload=()=>{let iw=im.naturalWidth,ih=im.naturalHeight;if(!iw||!ih){toast('이미지를 열 수 없어요.');return}const scale=Math.min(1,1600/Math.max(iw,ih));let c=document.createElement('canvas');c.width=Math.round(iw*scale);c.height=Math.round(ih*scale);let cctx=c.getContext('2d');cctx.drawImage(im,0,0,c.width,c.height);let format=(file.type==='image/png'||file.type==='image/webp'||file.type==='image/gif')?'image/png':'image/jpeg';let data=format==='image/png'?c.toDataURL('image/png'):c.toDataURL('image/jpeg',.91);loadImageData(data);state.photoZoom=1;state.photoX=0;state.photoY=0;$('photoZoom').value=100;$('photoZoomVal').textContent='100%';toast('사진을 넣었어요! 카드에서 움직여 봐요 💕')};im.onerror=()=>toast('이미지 파일을 읽을 수 없어요.');im.src=reader.result};reader.onerror=()=>toast('파일을 읽는 데 실패했어요.');reader.readAsDataURL(file)}
+function setPhotoFile(file){if(!file||!file.type.startsWith('image/')){toast('이미지 파일을 선택해 주세요.');return}if(file.size>25*1024*1024){toast('25MB 이하의 이미지를 선택해 주세요.');return}let reader=new FileReader();reader.onload=()=>{const im=new Image();im.onload=()=>{let iw=im.naturalWidth,ih=im.naturalHeight;if(!iw||!ih){toast('이미지를 열 수 없어요.');return}const scale=Math.min(1,2400/Math.max(iw,ih));let c=document.createElement('canvas');c.width=Math.round(iw*scale);c.height=Math.round(ih*scale);let cctx=c.getContext('2d');cctx.drawImage(im,0,0,c.width,c.height);let format=(file.type==='image/png'||file.type==='image/webp'||file.type==='image/gif')?'image/png':'image/jpeg';let data=format==='image/png'?c.toDataURL('image/png'):c.toDataURL('image/jpeg',.97);loadImageData(data);state.photoZoom=1;state.photoX=0;state.photoY=0;$('photoZoom').value=100;$('photoZoomVal').textContent='100%';toast('사진을 넣었어요! 카드에서 움직여 봐요 💕')};im.onerror=()=>toast('이미지 파일을 읽을 수 없어요.');im.src=reader.result};reader.onerror=()=>toast('파일을 읽는 데 실패했어요.');reader.readAsDataURL(file)}
 function loadImageData(data){state.imageData=data;if(!data){photoImg=null;return Promise.resolve()}return new Promise((resolve,reject)=>{let im=new Image();im.onload=()=>{photoImg=im;resolve()};im.onerror=reject;im.src=data})}
 function getCanvasCoords(e){let b=canvas.getBoundingClientRect();return{x:(e.clientX-b.left)*W/b.width,y:(e.clientY-b.top)*getH()/b.height}}
 canvas.addEventListener('pointerdown',e=>{if(working)return;let p=getCanvasCoords(e),obj=hitTest(p.x,p.y);state.selected=obj?obj.id:null;drag={mode:obj?'object':'photo',id:obj?.id,x:p.x,y:p.y,oldX:obj?.x,oldY:obj?.y,photoX:state.photoX,photoY:state.photoY};canvas.setPointerCapture(e.pointerId);syncSelected()});canvas.addEventListener('pointermove',e=>{if(!drag)return;let p=getCanvasCoords(e),dx=p.x-drag.x,dy=p.y-drag.y;if(drag.mode==='object'){let obj=getSelected();if(!obj)return;obj.x=clamp(drag.oldX+dx/W,.02,.98);obj.y=clamp(drag.oldY+dy/getH(),.02,.98)}else if(photoImg){let r=getPhotoRect();state.photoX=clamp(drag.photoX+dx/(r.w*.5),-2,2);state.photoY=clamp(drag.photoY+dy/(r.h*.5),-2,2)}});function stopDrag(){drag=null}canvas.addEventListener('pointerup',stopDrag);canvas.addEventListener('pointercancel',stopDrag);canvas.addEventListener('lostpointercapture',stopDrag);
@@ -423,8 +428,9 @@ async function saveGif(){
  const btn=$('gifDownload');btn.disabled=true;btn.textContent='GIF 만들고 있어요 ✨';
  let previous=state.selected;state.selected=null;
  try{
-  // Render at native 480px width for sharper photo details and lettering.
-  const scale=1,ww=Math.round(W*scale),hh=Math.round(getH()*scale),count=16,delay=13;
+  // User-selected width: 480 / 720 / 960 px. GIF remains limited to 256 colors.
+  const scale=Number($('animationQuality').value)||1.5;
+  const ww=Math.round(W*scale),hh=Math.round(getH()*scale),count=16,delay=13;
   const frames=[];
   for(let i=0;i<count;i++){
    setProgress(`선명한 프레임 준비 중... ${i+1}/${count}`,Math.round((i/count)*43));
@@ -452,10 +458,97 @@ async function saveGif(){
   console.error(err);$('status').textContent='GIF 저장 중 오류가 생겼어요.';
   toast('GIF 저장에 실패했어요.');
  }finally{
-  state.selected=previous;working=false;btn.disabled=false;btn.textContent='움직이는 GIF 저장 ✧';
+  state.selected=previous;working=false;btn.disabled=false;btn.textContent='고화질 GIF 저장 ✧';
   setTimeout(()=>{$('gifProgress').style.display='none'},1800);
  }
 }
+
+// APNG (animated PNG): lossless, full-color animation without the GIF 256-color palette limit.
+// PNG frame compression is handled by the browser; only PNG/APNG chunk packaging happens here.
+const PNG_SIGNATURE=new Uint8Array([137,80,78,71,13,10,26,10]);
+function be32(bytes,n,offset){bytes[offset]=(n>>>24)&255;bytes[offset+1]=(n>>>16)&255;bytes[offset+2]=(n>>>8)&255;bytes[offset+3]=n&255;}
+function be16(bytes,n,offset){bytes[offset]=(n>>>8)&255;bytes[offset+1]=n&255;}
+function get32(data,offset){return ((data[offset]*0x1000000)+(data[offset+1]<<16)+(data[offset+2]<<8)+data[offset+3])>>>0;}
+const CRC_TABLE=(()=>{const table=new Uint32Array(256);for(let i=0;i<256;i++){let c=i;for(let j=0;j<8;j++)c=(c&1)?0xedb88320^(c>>>1):(c>>>1);table[i]=c>>>0;}return table})();
+function apngChunk(type,payload){
+ const bytes=new Uint8Array(payload.length+12);
+ be32(bytes,payload.length,0);
+ for(let i=0;i<4;i++)bytes[4+i]=type.charCodeAt(i);
+ bytes.set(payload,8);
+ let crc=0xffffffff;
+ for(let i=4;i<bytes.length-4;i++)crc=CRC_TABLE[(crc^bytes[i])&255]^(crc>>>8);
+ be32(bytes,(crc^0xffffffff)>>>0,bytes.length-4);
+ return bytes;
+}
+function readPngChunks(arrayBuffer){
+ const b=new Uint8Array(arrayBuffer);
+ if(b.length<32||!PNG_SIGNATURE.every((x,i)=>b[i]===x))throw Error('PNG frame invalid');
+ const result=[];let offset=8;
+ while(offset+12<=b.length){
+  const len=get32(b,offset),start=offset+8,end=start+len;
+  if(end+4>b.length)throw Error('PNG chunk truncated');
+  const type=String.fromCharCode(b[offset+4],b[offset+5],b[offset+6],b[offset+7]);
+  result.push({type,data:b.slice(start,end),raw:b.slice(offset,end+4)});
+  offset=end+4;
+  if(type==='IEND')break;
+ }
+ return result;
+}
+function apngFrameControl(sequence,width,height,delayMs){
+ const data=new Uint8Array(26);
+ be32(data,sequence,0);be32(data,width,4);be32(data,height,8);
+ be32(data,0,12);be32(data,0,16);
+ be16(data,delayMs,20);be16(data,1000,22);
+ data[24]=0; data[25]=0; // APNG_DISPOSE_OP_NONE, APNG_BLEND_OP_SOURCE
+ return apngChunk('fcTL',data);
+}
+function canvasPng(canvas){return new Promise((resolve,reject)=>{
+ canvas.toBlob(blob=>blob?resolve(blob):reject(Error('PNG export failed')),'image/png');
+});}
+async function saveApng(){
+ if(working)return;
+ working=true;
+ const btn=$('apngDownload');btn.disabled=true;btn.textContent='원본 색감으로 저장 중… ✨';
+ const prev=state.selected;state.selected=null;
+ const progress=$('apngProgress'),bar=$('apngBar');progress.style.display='block';
+ try{
+  const scale=Number($('animationQuality').value)||1.5;
+  const width=Math.round(W*scale),height=Math.round(getH()*scale);
+  const count=16,delayMs=130;
+  let seq=0;const apng=[PNG_SIGNATURE];
+  for(let i=0;i<count;i++){
+   $('status').textContent=`원본 색감의 움직이는 PNG 제작 중… ${i+1}/${count}`;
+   bar.style.width=`${Math.round(100*(i/count))}%`;
+   await new Promise(resolve=>setTimeout(resolve,0));
+   const frame=renderedCanvas(scale,i/count);
+   const png=readPngChunks(await (await canvasPng(frame)).arrayBuffer());
+   if(i===0){
+    const ihdr=png.find(c=>c.type==='IHDR');if(!ihdr)throw Error('Missing PNG header');
+    apng.push(ihdr.raw);
+    const actl=new Uint8Array(8);be32(actl,count,0);be32(actl,0,4);
+    apng.push(apngChunk('acTL',actl));
+    apng.push(apngFrameControl(seq++,width,height,delayMs));
+    for(const c of png)if(c.type==='IDAT')apng.push(c.raw);
+   }else{
+    apng.push(apngFrameControl(seq++,width,height,delayMs));
+    for(const c of png)if(c.type==='IDAT'){
+     const d=new Uint8Array(c.data.length+4);be32(d,seq++,0);d.set(c.data,4);
+     apng.push(apngChunk('fdAT',d));
+    }
+   }
+  }
+  apng.push(apngChunk('IEND',new Uint8Array(0)));
+  bar.style.width='100%';
+  downloadBlob(new Blob(apng,{type:'image/png'}),'DEARLY_Kira_Animated_HQ.png');
+  $('status').textContent='원본 색감의 움직이는 PNG를 저장했어요 ♡';
+  toast('초선명 움직이는 PNG를 저장했어요! 💎');
+ }catch(err){console.error(err);$('status').textContent='움직이는 PNG 저장 중 문제가 발생했어요.';toast('움직이는 PNG 저장에 실패했어요.');}
+ finally{
+  state.selected=prev;working=false;btn.disabled=false;btn.textContent='초선명 움직이는 PNG 저장 ♡';
+  setTimeout(()=>{progress.style.display='none'},2000);
+ }
+}
+
 function saveProject(){const copy={...state,selected:null};downloadBlob(new Blob([JSON.stringify({app:'DEARLY Kira Maker',version:'2.1',state:copy},null,2)],{type:'application/json'}),'DEARLY_Kira_Project.json');toast('작업 파일을 저장했어요 📁')}
 async function loadProject(file){if(!file)return;try{let obj=JSON.parse(await file.text());if(obj.app!=='DEARLY Kira Maker'||!obj.state||!Array.isArray(obj.state.stickers)||!Array.isArray(obj.state.texts))throw Error('invalid project');state={...initial(),...obj.state,selected:null,effects:{...initial().effects,...obj.state.effects}};if(!['3:4','2:3','1:1'].includes(state.ratio))state.ratio='3:4';if(state.frame==='lace')state.frame='gingham';if(state.frame==='ribbon')state.frame='bloom';if(!frames.some(x=>x[0]===state.frame))state.frame='bloom';if(typeof state.polaroidCaption!=='string')state.polaroidCaption='sweetest memory ♡';state.polaroidCaption=state.polaroidCaption.slice(0,44);state.customAssets=Array.isArray(state.customAssets)?state.customAssets.filter(x=>x&&typeof x.data==='string'&&x.data.startsWith('data:image/png;base64,')).slice(0,30):[];for(const t of state.texts)ensureFont(t.font||state.font);for(const st of state.stickers){if(st.imageData)getStickerImage(st.imageData)}uid=Math.max(0,...state.stickers.map(x=>Number(x.id)||0),...state.texts.map(x=>Number(x.id)||0));await loadImageData(state.imageData);syncControls();toast('이전 작업을 불러왔어요! 💗')}catch(err){console.error(err);toast('올바른 Kira Maker 작업 파일이 아니에요.')}}
 // Buttons and settings
@@ -467,7 +560,7 @@ function syncFontExamples(){
   document.querySelectorAll('[data-font-example]').forEach(b=>b.classList.toggle('active',b.dataset.fontExample===$('fontSelect').value));
 }
 $('fontSelect').addEventListener('change',syncFontExamples);syncFontExamples();
-$('fontSelect').addEventListener('change',e=>{state.font=e.target.value;let o=getSelected();if(o?.type==='text')o.font=state.font;ensureFont(state.font);syncFontExamples()});$('textColor').addEventListener('input',e=>{state.textColor=e.target.value;let o=getSelected();if(o?.type==='text')o.color=state.textColor});$('textOutline').addEventListener('input',e=>{state.textOutline=e.target.value;let o=getSelected();if(o?.type==='text')o.outline=state.textOutline});$('addText').addEventListener('click',addText);$('newText').addEventListener('keydown',e=>{if(e.key==='Enter')addText()});$('selectedSize').addEventListener('input',e=>{let o=getSelected();if(!o)return;o.size=Number(e.target.value);$('selectedSizeVal').textContent=o.size});$('selectedRotation').addEventListener('input',e=>{let o=getSelected();if(!o)return;o.rot=Number(e.target.value);$('selectedRotationVal').textContent=o.rot+'°'});$('selectedTextInput').addEventListener('input',e=>{let o=getSelected();if(o?.type==='text')o.value=e.target.value});$('bringForward').addEventListener('click',()=>selectedAction('front'));$('duplicateSelected').addEventListener('click',()=>selectedAction('duplicate'));$('deleteSelected').addEventListener('click',()=>selectedAction('delete'));$('clearStickers').addEventListener('click',()=>{state.stickers=[];state.selected=null;syncSelected();toast('스티커를 모두 지웠어요')});$('randomEffects').addEventListener('click',()=>{for(let [key] of effectDefinitions)state.effects[key]=Math.random()>.47;if(!Object.values(state.effects).some(Boolean))state.effects.sparkle=true;renderEffects();toast('새로운 반짝임 조합! ✨')});$('quickSparkle').addEventListener('click',()=>{tab('effects')});$('quickSave').addEventListener('click',()=>{tab('save');if(matchMedia('(max-width:790px)').matches)document.querySelector('.editor').scrollIntoView({behavior:'smooth',block:'start'})});$('pngDownload').addEventListener('click',savePng);$('gifDownload').addEventListener('click',saveGif);$('projectSave').addEventListener('click',saveProject);$('projectLoadBtn').addEventListener('click',()=>$('projectFile').click());$('projectFile').addEventListener('change',e=>{loadProject(e.target.files[0]);e.target.value=''});$('clearAll').addEventListener('click',()=>{if(confirm('꾸민 내용을 모두 지우고 처음부터 시작할까요?')){state=initial();photoImg=null;syncControls();tab('photo');toast('새 카드를 준비했어요 ♡')}});$('helpBtn').addEventListener('click',()=>$('helpModal').classList.add('show'));$('helpClose').addEventListener('click',()=>$('helpModal').classList.remove('show'));$('helpModal').addEventListener('click',e=>{if(e.target===$('helpModal'))e.currentTarget.classList.remove('show')});document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('helpModal').classList.remove('show');state.selected=null;syncSelected()}if(e.target instanceof HTMLInputElement||e.target instanceof HTMLTextAreaElement)return;if((e.key==='Delete'||e.key==='Backspace')&&getSelected())selectedAction('delete')});
+$('fontSelect').addEventListener('change',e=>{state.font=e.target.value;let o=getSelected();if(o?.type==='text')o.font=state.font;ensureFont(state.font);syncFontExamples()});$('textColor').addEventListener('input',e=>{state.textColor=e.target.value;let o=getSelected();if(o?.type==='text')o.color=state.textColor});$('textOutline').addEventListener('input',e=>{state.textOutline=e.target.value;let o=getSelected();if(o?.type==='text')o.outline=state.textOutline});$('addText').addEventListener('click',addText);$('newText').addEventListener('keydown',e=>{if(e.key==='Enter')addText()});$('selectedSize').addEventListener('input',e=>{let o=getSelected();if(!o)return;o.size=Number(e.target.value);$('selectedSizeVal').textContent=o.size});$('selectedRotation').addEventListener('input',e=>{let o=getSelected();if(!o)return;o.rot=Number(e.target.value);$('selectedRotationVal').textContent=o.rot+'°'});$('selectedTextInput').addEventListener('input',e=>{let o=getSelected();if(o?.type==='text')o.value=e.target.value});$('bringForward').addEventListener('click',()=>selectedAction('front'));$('duplicateSelected').addEventListener('click',()=>selectedAction('duplicate'));$('deleteSelected').addEventListener('click',()=>selectedAction('delete'));$('clearStickers').addEventListener('click',()=>{state.stickers=[];state.selected=null;syncSelected();toast('스티커를 모두 지웠어요')});$('randomEffects').addEventListener('click',()=>{for(let [key] of effectDefinitions)state.effects[key]=Math.random()>.47;if(!Object.values(state.effects).some(Boolean))state.effects.sparkle=true;renderEffects();toast('새로운 반짝임 조합! ✨')});$('quickSparkle').addEventListener('click',()=>{tab('effects')});$('quickSave').addEventListener('click',()=>{tab('save');if(matchMedia('(max-width:790px)').matches)document.querySelector('.editor').scrollIntoView({behavior:'smooth',block:'start'})});$('pngDownload').addEventListener('click',savePng);$('gifDownload').addEventListener('click',saveGif);$('apngDownload').addEventListener('click',saveApng);$('projectSave').addEventListener('click',saveProject);$('projectLoadBtn').addEventListener('click',()=>$('projectFile').click());$('projectFile').addEventListener('change',e=>{loadProject(e.target.files[0]);e.target.value=''});$('clearAll').addEventListener('click',()=>{if(confirm('꾸민 내용을 모두 지우고 처음부터 시작할까요?')){state=initial();photoImg=null;syncControls();tab('photo');toast('새 카드를 준비했어요 ♡')}});$('helpBtn').addEventListener('click',()=>$('helpModal').classList.add('show'));$('helpClose').addEventListener('click',()=>$('helpModal').classList.remove('show'));$('helpModal').addEventListener('click',e=>{if(e.target===$('helpModal'))e.currentTarget.classList.remove('show')});document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('helpModal').classList.remove('show');state.selected=null;syncSelected()}if(e.target instanceof HTMLInputElement||e.target instanceof HTMLTextAreaElement)return;if((e.key==='Delete'||e.key==='Backspace')&&getSelected())selectedAction('delete')});
 renderStickers();syncControls();ensureFont(state.font);requestAnimationFrame(drawLoop);
 </script>
 </body></html>
