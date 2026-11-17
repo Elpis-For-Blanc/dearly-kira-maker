@@ -57,7 +57,7 @@
 <p class="tip">💡 스티커를 선택하면 미리보기 아래에서 크기·회전·복제·삭제를 할 수 있어요.</p><button class="btn secondary wide" id="clearStickers">스티커 모두 지우기</button></div>
 <div class="pane" id="pane-text"><h2 class="panel-title">문구 꾸미기 ✏️</h2><p class="panel-desc">최애 이름, 짧은 한마디, 기념일도 넣어봐요.<br>글자를 카드에서 자유롭게 움직일 수 있어요.</p><div class="field"><label class="field-label" for="newText">새 문구</label><div class="text-add"><input class="text-input" id="newText" maxlength="50" placeholder="예: MY LITTLE STAR"><button class="btn" id="addText">추가 +</button></div></div><div class="field"><div class="field-label">글꼴</div><select id="fontSelect" class="select"><option value="rounded">동글동글 · 주아</option><option value="serif">로맨틱 · 고운바탕</option><option value="hand">러블리 · 나눔손글씨</option><option value="mono">게임 · 도현</option></select></div><div class="font-examples" id="fontExamples"><button type="button" class="font-sample" data-font-example="rounded"><span class="font-sample-label">동글동글 기본</span><span class="font-sample-text" style="font-family:'Jua', sans-serif">하얀 토끼와 달빛의 이야기</span></button><button type="button" class="font-sample" data-font-example="serif"><span class="font-sample-label">로맨틱 세리프</span><span class="font-sample-text" style="font-family:'Gowun Batang', serif">우연으로 시작해,운명이 되고,마침내 서로의 구원이 된 사랑</span></button><button type="button" class="font-sample" data-font-example="hand"><span class="font-sample-label">러블리 손글씨</span><span class="font-sample-text" style="font-family:'Nanum Pen Script', cursive">달콤한 우연</span></button><button type="button" class="font-sample" data-font-example="mono"><span class="font-sample-label">게임 도트 느낌</span><span class="font-sample-text" style="font-family:'Do Hyeon', monospace">SWEET SERENDIPITY</span></button></div><p class="font-tip">♡ 선택 중인 문구의 글꼴도 바로 바뀌어요. 웹 글꼴은 인터넷 연결이 필요할 수 있어요.</p><div class="field"><div class="field-label">글자 색상</div><div class="color-settings"><label class="color-item"><input type="color" id="textColor" value="#bc638e">글자 색</label><label class="color-item"><input type="color" id="textOutline" value="#ffffff">테두리 색</label></div></div><p class="tip">💌 추가한 문구를 터치하면 아래에서 내용을 수정하거나 크기를 바꿀 수 있어요.</p></div>
 <div class="pane" id="pane-effects"><h2 class="panel-title">키라키라 반짝임 ✨</h2><p class="panel-desc">원하는 효과를 여러 개 선택할 수 있어요.<br>미리보기와 GIF에 똑같이 적용돼요!</p><div id="effectList"></div><div class="field" style="margin-top:19px"><label class="field-label" for="effectPower">반짝임 강도 <output id="effectPowerVal">70%</output></label><div class="range-row"><input id="effectPower" type="range" min="10" max="100" value="70" step="5"></div></div><button id="randomEffects" class="btn secondary wide">🎲 랜덤 반짝임 조합</button><p class="tip">GIF는 약 2초 동안 자연스럽게 반복되는 움직임으로 저장돼요.</p></div>
-<div class="pane" id="pane-save"><h2 class="panel-title">반짝이는 순간 저장 💌</h2><p class="panel-desc">꾸민 카드를 사진이나 움직이는 움짤로 저장해요.</p><div class="save-box"><strong>📸 PNG · 선명한 정지 이미지</strong><p>고화질로 저장해요. 장식과 선택한 효과가 한 장의 이미지에 담겨요.</p><button id="pngDownload" class="btn wide">PNG 이미지 저장 ♡</button></div><div class="save-box"><strong>✨ GIF · 움직이는 포토카드</strong><p>선택한 반짝이 효과가 움직이는 약 2초짜리 GIF로 저장돼요. 모바일에서도 사용 가능해요.</p><button id="gifDownload" class="btn wide">움직이는 GIF 저장 ✧</button><div class="progress" id="gifProgress"><span id="gifBar"></span></div></div><div class="save-box" style="background:#fff"><strong>📁 프로젝트 보관함</strong><p>다음에 이어서 꾸밀 수 있도록 사진과 장식 설정을 파일로 저장해요.</p><div style="display:flex;gap:8px;margin-top:11px"><button id="projectSave" class="btn secondary" style="flex:1">작업 저장</button><button id="projectLoadBtn" class="btn ghost" style="flex:1">작업 불러오기</button><input type="file" id="projectFile" accept="application/json,.json" hidden></div></div><div class="status" id="status" aria-live="polite"></div></div>
+<div class="pane" id="pane-save"><h2 class="panel-title">반짝이는 순간 저장 💌</h2><p class="panel-desc">꾸민 카드를 사진이나 움직이는 움짤로 저장해요.</p><div class="save-box"><strong>📸 PNG · 선명한 정지 이미지</strong><p>고화질로 저장해요. 장식과 선택한 효과가 한 장의 이미지에 담겨요.</p><button id="pngDownload" class="btn wide">PNG 이미지 저장 ♡</button></div><div class="save-box"><strong>✨ GIF · 움직이는 포토카드</strong><p>움직이는 약 2초짜리 GIF로 저장돼요. 사진 색감과 선명도를 우선해 만들어요.</p><button id="gifDownload" class="btn wide">움직이는 GIF 저장 ✧</button><div class="progress" id="gifProgress"><span id="gifBar"></span></div></div><div class="save-box" style="background:#fff"><strong>📁 프로젝트 보관함</strong><p>다음에 이어서 꾸밀 수 있도록 사진과 장식 설정을 파일로 저장해요.</p><div style="display:flex;gap:8px;margin-top:11px"><button id="projectSave" class="btn secondary" style="flex:1">작업 저장</button><button id="projectLoadBtn" class="btn ghost" style="flex:1">작업 불러오기</button><input type="file" id="projectFile" accept="application/json,.json" hidden></div></div><div class="status" id="status" aria-live="polite"></div></div>
 </div></section>
 <section class="stage-wrap"><div class="stage-panel"><div class="stage-head"><div><strong>♡ MY KIRA CARD</strong><br><span>카드에서 사진·스티커·글자를 끌어 움직여요</span></div><span id="ratioLabel">3:4 · CARD</span></div><div class="stage-zone"><div class="canvas-holder"><canvas id="preview" width="480" height="640" aria-label="움직이는 포토카드 미리보기"></canvas><span class="animated-label">✧ LIVE</span></div></div><div class="selected-panel" id="selectedPanel"><div class="selected-title"><span id="selectedTitle">선택한 장식</span><span style="color:#d48eb0">✧ 편집 중</span></div><div class="field" id="selectedTextRow" style="display:none"><label class="field-label" for="selectedTextInput">문구 편집</label><input id="selectedTextInput" maxlength="50" class="text-input"></div><div class="field" style="margin-bottom:9px"><label class="field-label" for="selectedSize">크기 <output id="selectedSizeVal">60</output></label><div class="range-row"><input id="selectedSize" type="range" min="20" max="150" step="1"></div></div><div class="field" style="margin-bottom:0"><label class="field-label" for="selectedRotation">회전 <output id="selectedRotationVal">0°</output></label><div class="range-row"><input id="selectedRotation" type="range" min="-180" max="180" step="5"></div></div><div class="selected-actions"><button id="bringForward" class="btn ghost">앞으로</button><button id="duplicateSelected" class="btn secondary">복제 ♡</button><button id="deleteSelected" class="btn ghost">삭제</button></div></div><div class="stage-foot"><button class="btn secondary" id="quickSparkle">✨ 반짝임 바꾸기</button><button class="btn ghost" id="clearAll">↺ 처음부터</button><button class="btn" id="quickSave">💗 완성! 저장하기</button></div><div class="small-note">♡ 저장하는 파일에는 편집 도구나 선택 표시가 나오지 않아요.</div></div></section>
 </main><footer class="footer">DEARLY KIRA MAKER · MADE WITH LOVE & SPARKLES ♡</footer>
@@ -141,27 +141,44 @@ function drawSample(c,r,t){
  c.restore();
 }
 function drawPhoto(c,r,t){if(!photoImg){drawSample(c,r,t);return}c.save();roundedRect(c,r.x,r.y,r.w,r.h,10);c.clip();const iw=photoImg.naturalWidth||photoImg.width,ih=photoImg.naturalHeight||photoImg.height;if(iw>0&&ih>0){const scale=Math.max(r.w/iw,r.h/ih)*state.photoZoom,dw=iw*scale,dh=ih*scale;let dx=(r.w-dw)/2+state.photoX*r.w*.5,dy=(r.h-dh)/2+state.photoY*r.h*.5;dx=clamp(dx,r.w-dw,0);dy=clamp(dy,r.h-dh,0);c.drawImage(photoImg,r.x+dx,r.y+dy,dw,dh)}c.restore()}
-function drawHolo(c,H,t){if(!state.effects.holo)return;let xx=((t+.15)%1)* (W*2.2)-W*.7;let gr=c.createLinearGradient(xx-115,0,xx+115,0);gr.addColorStop(0,'rgba(255,255,255,0)');gr.addColorStop(.24,'rgba(255,180,221,.07)');gr.addColorStop(.42,'rgba(193,198,255,.29)');gr.addColorStop(.53,'rgba(255,255,255,.43)');gr.addColorStop(.65,'rgba(255,227,165,.23)');gr.addColorStop(1,'rgba(255,255,255,0)');c.save();c.globalAlpha=.3+state.power*.65;c.fillStyle=gr;c.translate(W/2,H/2);c.rotate(-.29);c.fillRect(-W*1.5,-H*1.5,W*3,H*3);c.restore()}
+function drawHolo(c,H,t){
+ if(!state.effects.holo)return;
+ const r=getPhotoRect();
+ c.save();
+ // Keep the reflective sweep narrow and inside the photo; don't bleach the full card.
+ roundedRect(c,r.x,r.y,r.w,r.h,10);c.clip();
+ const x=r.x-105+(r.w+210)*(t%1),band=38;
+ c.translate(x,r.y+r.h*.5);c.rotate(-.19);
+ const gr=c.createLinearGradient(-band,0,band,0);
+ gr.addColorStop(0,'rgba(255,255,255,0)');
+ gr.addColorStop(.30,'rgba(242,216,251,.018)');
+ gr.addColorStop(.47,'rgba(255,255,255,.12)');
+ gr.addColorStop(.54,'rgba(250,238,255,.15)');
+ gr.addColorStop(.72,'rgba(255,255,255,.024)');
+ gr.addColorStop(1,'rgba(255,255,255,0)');
+ c.globalAlpha=.3+state.power*.7;
+ c.fillStyle=gr;c.fillRect(-band,-H*1.3,band*2,H*2.6);
+ c.restore();
+}
 function drawGlow(c,H,t){
  if(!state.effects.glow)return;
  c.save();
- // A visible breathing light, rather than the old nearly transparent edge-only gradient.
- const pulse=(1+Math.sin(t*Math.PI*2-Math.PI/2))/2;
- const strength=(.30+.62*pulse)*(.35+.65*state.power);
  const r=getPhotoRect();
- c.beginPath();roundedRect(c,r.x,r.y,r.w,r.h,10);c.clip();
- c.globalCompositeOperation='screen';
- const spots=[
-   [r.x+r.w*.27,r.y+r.h*.28,r.w*.72,'255,244,255',.45],
-   [r.x+r.w*.76,r.y+r.h*.66,r.w*.62,'255,225,245',.35],
-   [r.x+r.w*.52,r.y+r.h*.49,r.w*.83,'255,255,255',.22]
- ];
- for(const [x,y,rad,color,alpha] of spots){
-   const g=c.createRadialGradient(x,y,0,x,y,rad);
-   g.addColorStop(0,`rgba(${color},${Math.min(.95,alpha*strength)})`);
-   g.addColorStop(.48,`rgba(${color},${alpha*strength*.36})`);
-   g.addColorStop(1,`rgba(${color},0)`);
-   c.fillStyle=g;c.fillRect(r.x,r.y,r.w,r.h);
+ const pulse=(1+Math.sin(t*Math.PI*2-Math.PI/2))/2;
+ const strength=(.22+.65*pulse)*(.3+.7*state.power);
+ // Edge light instead of translucent white painted over faces.
+ c.shadowColor=rgba(state.accent,.84*strength);
+ c.shadowBlur=12+24*strength;
+ c.strokeStyle=`rgba(255,255,255,${.12+.32*strength})`;
+ c.lineWidth=5;
+ roundedRect(c,r.x+4,r.y+4,r.w-8,r.h-8,10);c.stroke();
+ c.shadowBlur=0;
+ const spots=[[r.x+8,r.y+8],[r.x+r.w-8,r.y+8],[r.x+8,r.y+r.h-8],[r.x+r.w-8,r.y+r.h-8]];
+ for(const [x,y] of spots){
+  const grad=c.createRadialGradient(x,y,0,x,y,56);
+  grad.addColorStop(0,`rgba(255,255,255,${.2*strength})`);
+  grad.addColorStop(1,'rgba(255,255,255,0)');
+  c.fillStyle=grad;c.fillRect(x-56,y-56,112,112);
  }
  c.restore();
 }
@@ -252,57 +269,87 @@ function selectedAction(action){let obj=getSelected();if(!obj)return;let arr=obj
 function downloadBlob(blob,name){let url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000)}
 function renderedCanvas(scale,t){let out=document.createElement('canvas');out.width=Math.round(W*scale);out.height=Math.round(getH()*scale);let c=out.getContext('2d',{willReadFrequently:true});c.scale(scale,scale);drawScene(c,t,false);return out}
 function savePng(){try{let c=renderedCanvas(2,.45);c.toBlob(blob=>{if(blob){downloadBlob(blob,'DEARLY_Kira_Card.png');toast('PNG 포토카드를 저장했어요 💕')}else toast('PNG 저장에 실패했어요.')},'image/png')}catch(e){console.error(e);toast('이미지 저장에 실패했어요.')}}
-// GIF89a encoder: each image descriptor, then its local palette, then LZW min code size, then image data.
-// Per-frame adaptive 256-color palette: preserves illustration colors without noisy ordered dithering.
-function adaptiveGifColors(imageData,w,h){
- const d=imageData.data,hist=new Map();
- for(let i=0;i<d.length;i+=16){
-  const key=((d[i]>>3)<<10)|((d[i+1]>>3)<<5)|(d[i+2]>>3);
-  hist.set(key,(hist.get(key)||0)+1);
+// GIF89a animation: use one optimized palette across all frames to prevent
+// frame-to-frame color flicker and blocky patches in pale illustrations.
+function buildGifPalette(frames){
+ const hist=new Uint32Array(32768);
+ for(let fi=0;fi<frames.length;fi++){
+  const d=frames[fi].data,weight=fi===0?5:1;
+  for(let i=0;i<d.length;i+=16){
+   const key=((d[i]>>3)<<10)|((d[i+1]>>3)<<5)|(d[i+2]>>3);
+   hist[key]+=weight;
+  }
  }
- const entries=Array.from(hist,([key,count])=>({r:((key>>10)&31)*8+4,g:((key>>5)&31)*8+4,b:(key&31)*8+4,count}));
+ const entries=[];
+ for(let key=0;key<hist.length;key++)if(hist[key]){
+  entries.push({r:((key>>10)&31)*8+4,g:((key>>5)&31)*8+4,b:(key&31)*8+4,count:hist[key]});
+ }
  let boxes=[entries];
  while(boxes.length<256){
-  let best=-1,score=-1,axis='r';
+  let best=-1,bestScore=-1,axis='r';
   for(let i=0;i<boxes.length;i++){
    const box=boxes[i];if(box.length<2)continue;
-   const rr=box.map(p=>p.r),gg=box.map(p=>p.g),bb=box.map(p=>p.b);
-   const ranges=[Math.max(...rr)-Math.min(...rr),Math.max(...gg)-Math.min(...gg),Math.max(...bb)-Math.min(...bb)];
-   const max=Math.max(...ranges),weight=box.reduce((n,p)=>n+p.count,0);
-   if(max*weight>score){score=max*weight;best=i;axis=['r','g','b'][ranges.indexOf(max)]}
+   let rMin=255,rMax=0,gMin=255,gMax=0,bMin=255,bMax=0,total=0;
+   for(const p of box){
+    if(p.r<rMin)rMin=p.r;if(p.r>rMax)rMax=p.r;
+    if(p.g<gMin)gMin=p.g;if(p.g>gMax)gMax=p.g;
+    if(p.b<bMin)bMin=p.b;if(p.b>bMax)bMax=p.b;
+    total+=p.count;
+   }
+   const ranges=[rMax-rMin,gMax-gMin,bMax-bMin];
+   const mx=Math.max(...ranges),score=mx*Math.sqrt(total);
+   if(score>bestScore){best=i;axis=['r','g','b'][ranges.indexOf(mx)];bestScore=score;}
   }
   if(best<0)break;
-  const box=boxes.splice(best,1)[0].sort((x,y)=>x[axis]-y[axis]);
-  const total=box.reduce((n,p)=>n+p.count,0);let half=0,cut=1;
-  for(let i=0;i<box.length-1;i++){half+=box[i].count;if(half>=total/2){cut=i+1;break}}
+  const box=boxes.splice(best,1)[0];
+  box.sort((a,b)=>a[axis]-b[axis]);
+  const total=box.reduce((x,p)=>x+p.count,0);let sum=0,cut=1;
+  for(let j=0;j<box.length-1;j++){sum+=box[j].count;if(sum>=total/2){cut=j+1;break;}}
   boxes.push(box.slice(0,cut),box.slice(cut));
  }
- const palette=new Uint8Array(768),colors=[];
- boxes.forEach((box,i)=>{
-  const total=box.reduce((n,p)=>n+p.count,0)||1;
-  const color=['r','g','b'].map(ch=>Math.round(box.reduce((n,p)=>n+p[ch]*p.count,0)/total));
-  colors.push(color);palette.set(color,i*3);
- });
- const lookup=new Int16Array(32768);lookup.fill(-1);
- const indices=new Uint8Array(w*h);
- for(let i=0;i<w*h;i++){
-  const j=i*4,r=d[j],g=d[j+1],b=d[j+2],key=((r>>3)<<10)|((g>>3)<<5)|(b>>3);
-  let chosen=lookup[key];
-  if(chosen<0){
-   let dist=Infinity;chosen=0;
-   for(let k=0;k<colors.length;k++){
-    const c=colors[k],dr=r-c[0],dg=g-c[1],db=b-c[2],v=dr*dr+dg*dg+db*db;
-    if(v<dist){dist=v;chosen=k}
-   }
-   lookup[key]=chosen;
-  }
-  indices[i]=chosen;
+ const palette=new Uint8Array(768);
+ const colors=[];
+ for(let i=0;i<boxes.length;i++){
+  const box=boxes[i],total=box.reduce((x,p)=>x+p.count,0)||1;
+  const c=['r','g','b'].map(ch=>Math.round(box.reduce((x,p)=>x+p[ch]*p.count,0)/total));
+  palette.set(c,i*3);colors.push(c);
  }
- return {indices,palette};
+ // Build a lookup for all observed 5-bit RGB colors once, not per frame.
+ const lookup=new Uint8Array(32768);
+ for(let key=0;key<hist.length;key++)if(hist[key]){
+  const r=((key>>10)&31)*8+4,g=((key>>5)&31)*8+4,b=(key&31)*8+4;
+  let nearest=0,min=Infinity;
+  for(let j=0;j<colors.length;j++){
+   const c=colors[j],dr=r-c[0],dg=g-c[1],db=b-c[2];
+   const distance=dr*dr+dg*dg+db*db;
+   if(distance<min){min=distance;nearest=j;}
+  }
+  lookup[key]=nearest;
+ }
+ // Late pixels not in our 1/4 sampling fall back to their nearest color.
+ const valid=new Uint8Array(32768);
+ for(let key=0;key<hist.length;key++)if(hist[key])valid[key]=1;
+ return {palette,lookup,valid,colors};
 }
-// Stable GIF LZW encoding. Keep a 9-bit code stream and reset the dictionary
-// before a code-size transition. This deliberately trades a little file size for
-// reliable playback in mobile image viewers, Chrome, Safari and other decoders.
+function quantizeGifFrame(imageData,quant){
+ const d=imageData.data,indices=new Uint8Array(d.length/4);
+ const {lookup,valid,colors}=quant;
+ for(let i=0;i<indices.length;i++){
+  const j=i*4,r=d[j],g=d[j+1],b=d[j+2];
+  const key=((r>>3)<<10)|((g>>3)<<5)|(b>>3);
+  if(!valid[key]){
+   let nearest=0,min=Infinity;
+   for(let k=0;k<colors.length;k++){
+    const c=colors[k],dr=r-c[0],dg=g-c[1],db=b-c[2];
+    const distance=dr*dr+dg*dg+db*db;
+    if(distance<min){min=distance;nearest=k;}
+   }
+   lookup[key]=nearest;valid[key]=1;
+  }
+  indices[i]=lookup[key];
+ }
+ return indices;
+}
 function lzwGif(indexes){
  const output=[];
  let bitBuffer=0,bits=0;
@@ -329,10 +376,56 @@ function lzwGif(indexes){
  return new Uint8Array(output);
 }
 function word(n){return[n&255,(n>>8)&255]}
-function gifFrame(indices,palette,w,h,delay){const compressed=lzwGif(indices),part=[0x21,0xF9,0x04,0x00,...word(delay),0,0,0x2C,0,0,0,0,...word(w),...word(h),0x87],chunks=[new Uint8Array(part),palette,new Uint8Array([8])];for(let offset=0;offset<compressed.length;offset+=255){let piece=compressed.subarray(offset,offset+255);chunks.push(new Uint8Array([piece.length]),piece)}chunks.push(new Uint8Array([0]));return chunks}
+function gifFrame(indices,w,h,delay){
+ const compressed=lzwGif(indices),part=[0x21,0xF9,0x04,0x08,...word(delay),0,0,0x2C,0,0,0,0,...word(w),...word(h),0,8];
+ const chunks=[new Uint8Array(part)];
+ for(let offset=0;offset<compressed.length;offset+=255){
+  const piece=compressed.subarray(offset,offset+255);
+  chunks.push(new Uint8Array([piece.length]),piece);
+ }
+ chunks.push(new Uint8Array([0]));return chunks;
+}
 function setProgress(msg,percent){$('status').textContent=msg;$('gifProgress').style.display='block';$('gifBar').style.width=percent+'%'}
-async function saveGif(){if(working)return;working=true;const btn=$('gifDownload');btn.disabled=true;btn.textContent='GIF 만들고 있어요 ✨';let previous=state.selected;state.selected=null;try{let scale=.75,ww=Math.round(W*scale),hh=Math.round(getH()*scale),count=16,delay=13,parts=[new Uint8Array([71,73,70,56,57,97,...word(ww),...word(hh),0x70,0,0]),new Uint8Array([0x21,0xFF,0x0B,78,69,84,83,67,65,80,69,50,46,48,0x03,0x01,0,0,0])];for(let i=0;i<count;i++){setProgress(`움직이는 카드 제작 중... ${i+1}/${count}`,Math.round((i/count)*96));await new Promise(resolve=>setTimeout(resolve,0));let cnv=renderedCanvas(scale,i/count),img=cnv.getContext('2d',{willReadFrequently:true}).getImageData(0,0,ww,hh),{indices,palette}=adaptiveGifColors(img,ww,hh);parts.push(...gifFrame(indices,palette,ww,hh,delay))}parts.push(new Uint8Array([0x3B]));const blob=new Blob(parts,{type:'image/gif'});setProgress('완성! 다운로드를 시작해요 ♡',100);downloadBlob(blob,'DEARLY_Kira_Animated.gif');toast('움직이는 GIF 포토카드를 저장했어요! ✨')}catch(err){console.error(err);$('status').textContent='저장 중 오류가 생겼어요. 다시 시도해 주세요.';toast('GIF 저장에 실패했어요.')}finally{state.selected=previous;working=false;btn.disabled=false;btn.textContent='움직이는 GIF 저장 ✧';setTimeout(()=>{$('gifProgress').style.display='none'},1800)}}
-function saveProject(){const copy={...state,selected:null};downloadBlob(new Blob([JSON.stringify({app:'DEARLY Kira Maker',version:'1.2',state:copy},null,2)],{type:'application/json'}),'DEARLY_Kira_Project.json');toast('작업 파일을 저장했어요 📁')}
+async function saveGif(){
+ if(working)return;
+ working=true;
+ const btn=$('gifDownload');btn.disabled=true;btn.textContent='GIF 만들고 있어요 ✨';
+ let previous=state.selected;state.selected=null;
+ try{
+  // Render at native 480px width for sharper photo details and lettering.
+  const scale=1,ww=Math.round(W*scale),hh=Math.round(getH()*scale),count=16,delay=13;
+  const frames=[];
+  for(let i=0;i<count;i++){
+   setProgress(`선명한 프레임 준비 중... ${i+1}/${count}`,Math.round((i/count)*43));
+   await new Promise(resolve=>setTimeout(resolve,0));
+   const cnv=renderedCanvas(scale,i/count);
+   frames.push(cnv.getContext('2d',{willReadFrequently:true}).getImageData(0,0,ww,hh));
+  }
+  setProgress('일러스트 색감을 맞추고 있어요 ♡',49);
+  await new Promise(resolve=>setTimeout(resolve,0));
+  const quant=buildGifPalette(frames);
+  const parts=[new Uint8Array([71,73,70,56,57,97,...word(ww),...word(hh),0xF7,0,0]),quant.palette,
+   new Uint8Array([0x21,0xFF,0x0B,78,69,84,83,67,65,80,69,50,46,48,0x03,0x01,0,0,0])];
+  for(let i=0;i<count;i++){
+   setProgress(`움직이는 카드 제작 중... ${i+1}/${count}`,50+Math.round(i/count*47));
+   await new Promise(resolve=>setTimeout(resolve,0));
+   const indices=quantizeGifFrame(frames[i],quant);
+   parts.push(...gifFrame(indices,ww,hh,delay));
+  }
+  parts.push(new Uint8Array([0x3B]));
+  const blob=new Blob(parts,{type:'image/gif'});
+  setProgress('완성! 다운로드를 시작해요 ♡',100);
+  downloadBlob(blob,'DEARLY_Kira_Animated.gif');
+  toast('움직이는 GIF 포토카드를 저장했어요! ✨');
+ }catch(err){
+  console.error(err);$('status').textContent='GIF 저장 중 오류가 생겼어요.';
+  toast('GIF 저장에 실패했어요.');
+ }finally{
+  state.selected=previous;working=false;btn.disabled=false;btn.textContent='움직이는 GIF 저장 ✧';
+  setTimeout(()=>{$('gifProgress').style.display='none'},1800);
+ }
+}
+function saveProject(){const copy={...state,selected:null};downloadBlob(new Blob([JSON.stringify({app:'DEARLY Kira Maker',version:'2.1',state:copy},null,2)],{type:'application/json'}),'DEARLY_Kira_Project.json');toast('작업 파일을 저장했어요 📁')}
 async function loadProject(file){if(!file)return;try{let obj=JSON.parse(await file.text());if(obj.app!=='DEARLY Kira Maker'||!obj.state||!Array.isArray(obj.state.stickers)||!Array.isArray(obj.state.texts))throw Error('invalid project');state={...initial(),...obj.state,selected:null,effects:{...initial().effects,...obj.state.effects}};if(!['3:4','2:3','1:1'].includes(state.ratio))state.ratio='3:4';if(state.frame==='lace')state.frame='gingham';if(state.frame==='ribbon')state.frame='bloom';if(!frames.some(x=>x[0]===state.frame))state.frame='bloom';if(typeof state.polaroidCaption!=='string')state.polaroidCaption='sweetest memory ♡';state.polaroidCaption=state.polaroidCaption.slice(0,44);state.customAssets=Array.isArray(state.customAssets)?state.customAssets.filter(x=>x&&typeof x.data==='string'&&x.data.startsWith('data:image/png;base64,')).slice(0,30):[];for(const t of state.texts)ensureFont(t.font||state.font);for(const st of state.stickers){if(st.imageData)getStickerImage(st.imageData)}uid=Math.max(0,...state.stickers.map(x=>Number(x.id)||0),...state.texts.map(x=>Number(x.id)||0));await loadImageData(state.imageData);syncControls();toast('이전 작업을 불러왔어요! 💗')}catch(err){console.error(err);toast('올바른 Kira Maker 작업 파일이 아니에요.')}}
 // Buttons and settings
 for(let b of document.querySelectorAll('.tab'))b.addEventListener('click',()=>tab(b.dataset.tab));$('frameList').addEventListener('click',e=>{let b=e.target.closest('[data-frame]');if(!b)return;state.frame=b.dataset.frame;renderFrames();$('polaroidField').style.display=state.frame==='polaroid'?'block':'none'});$('stickerList').addEventListener('click',e=>{let b=e.target.closest('[data-sticker]');if(b)addSticker(stickers[Number(b.dataset.sticker)])});$('customStickerList').addEventListener('click',e=>{let b=e.target.closest('[data-custom]');if(b){addPngSticker(state.customAssets[Number(b.dataset.custom)]);toast('내 PNG 스티커를 붙였어요! 💗')}});$('pngStickerFile').addEventListener('change',e=>{uploadPngStickers(e.target.files);e.target.value=''});$('polaroidCaption').addEventListener('input',e=>{state.polaroidCaption=e.target.value});$('effectList').addEventListener('change',e=>{if(e.target.dataset.effect)state.effects[e.target.dataset.effect]=e.target.checked});$('ratios').addEventListener('click',e=>{let b=e.target.closest('[data-ratio]');if(!b)return;state.ratio=b.dataset.ratio;resizeCanvas();syncControls()});$('patterns').addEventListener('click',e=>{let b=e.target.closest('[data-pattern]');if(!b)return;state.pattern=b.dataset.pattern;syncControls()});$('presets').addEventListener('click',e=>{let b=e.target.closest('[data-preset]');if(!b)return;let p=presets[b.dataset.preset];Object.assign(state,{bg:p.bg,accent:p.accent,preset:b.dataset.preset});syncControls();toast('색상을 변경했어요 ♡')});$('photoFile').addEventListener('change',e=>{setPhotoFile(e.target.files[0]);e.target.value=''});$('uploadDrop').addEventListener('dragover',e=>{e.preventDefault()});$('uploadDrop').addEventListener('drop',e=>{e.preventDefault();setPhotoFile(e.dataTransfer.files[0])});$('photoZoom').addEventListener('input',e=>{state.photoZoom=Number(e.target.value)/100;$('photoZoomVal').textContent=e.target.value+'%'});$('resetPhoto').addEventListener('click',()=>{state.photoZoom=1;state.photoX=0;state.photoY=0;syncControls()});$('bgColor').addEventListener('input',e=>{state.bg=e.target.value;state.preset='';syncControls()});$('accentColor').addEventListener('input',e=>{state.accent=e.target.value;state.preset='';syncControls()});$('effectPower').addEventListener('input',e=>{state.power=Number(e.target.value)/100;$('effectPowerVal').textContent=e.target.value+'%'});document.querySelectorAll('[data-font-example]').forEach(b=>b.addEventListener('click',()=>{
