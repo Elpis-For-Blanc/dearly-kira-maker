@@ -63,7 +63,7 @@ const $=id=>document.getElementById(id);
 const canvas=$('preview'), g=canvas.getContext('2d');
 const frames=[['bloom','블룸 가든','🌼'],['gingham','베리 깅엄','🍒'],['holo','홀로그램','🌈'],['classic','클래식','💌'],['hearts','러블리 하트','💗'],['star','스타 샤워','⭐'],['pearl','펄 비즈','🫧'],['polaroid','폴라로이드','📷']];
 const stickers=['🎀','💗','💖','🩷','💝','💕','✨','⭐','🌟','🌸','🌷','🌹','🍓','🍒','🦋','👑','🪽','🐰','🐻','🧸','🍬','🧁','🍭','💎','💌','🫧','🍀','🎧','🐱','🐾','🍰','🎠','🎶','🕊️','🍡','🪞'];
-const effectDefinitions=[['sparkle','✨','반짝반짝','별빛이 톡톡 켜지고 꺼져요'],['hearts','💗','플로팅 하트','작은 하트들이 둥둥 떠올라요'],['glitter','🌟','글리터 레인','반짝이는 펄이 흩날려요'],['holo','🌈','홀로그램 스윕','무지개 빛이 카드 위를 지나가요'],['glow','💫','소프트 글로우','부드러운 빛이 숨 쉬듯 반짝여요']];
+const effectDefinitions=[['sparkle','✨','반짝반짝','별빛이 톡톡 켜지고 꺼져요'],['hearts','💗','플로팅 하트','작은 하트들이 둥둥 떠올라요'],['glitter','🌟','글리터 레인','반짝이는 펄이 흩날려요'],['holo','🌈','홀로그램 스윕','무지개 빛이 카드 위를 지나가요'],['glow','💫','소프트 글로우','카드 위에 부드러운 빛이 밝아졌다 어두워져요']];
 // Font families use Korean web fonts when available; distinct installed fallbacks cover offline browsers.
 const fontTable={rounded:{family:'"Jua","NanumSquare","Apple SD Gothic Neo","Malgun Gothic",sans-serif',weight:'400',web:'Jua'},serif:{family:'"Gowun Batang","NanumMyeongjo","Noto Serif CJK KR",serif',weight:'700',web:'Gowun Batang'},hand:{family:'"Nanum Pen Script","UnPen",cursive',weight:'400',web:'Nanum Pen Script'},mono:{family:'"Do Hyeon","NanumGothicCoding",monospace',weight:'400',web:'Do Hyeon'}};
 const loadedFonts=new Set();
@@ -136,7 +136,29 @@ function drawSample(c,r,t){
 }
 function drawPhoto(c,r,t){if(!photoImg){drawSample(c,r,t);return}c.save();roundedRect(c,r.x,r.y,r.w,r.h,10);c.clip();const iw=photoImg.naturalWidth||photoImg.width,ih=photoImg.naturalHeight||photoImg.height;if(iw>0&&ih>0){const scale=Math.max(r.w/iw,r.h/ih)*state.photoZoom,dw=iw*scale,dh=ih*scale;let dx=(r.w-dw)/2+state.photoX*r.w*.5,dy=(r.h-dh)/2+state.photoY*r.h*.5;dx=clamp(dx,r.w-dw,0);dy=clamp(dy,r.h-dh,0);c.drawImage(photoImg,r.x+dx,r.y+dy,dw,dh)}c.restore()}
 function drawHolo(c,H,t){if(!state.effects.holo)return;let xx=((t+.15)%1)* (W*2.2)-W*.7;let gr=c.createLinearGradient(xx-115,0,xx+115,0);gr.addColorStop(0,'rgba(255,255,255,0)');gr.addColorStop(.24,'rgba(255,180,221,.07)');gr.addColorStop(.42,'rgba(193,198,255,.29)');gr.addColorStop(.53,'rgba(255,255,255,.43)');gr.addColorStop(.65,'rgba(255,227,165,.23)');gr.addColorStop(1,'rgba(255,255,255,0)');c.save();c.globalAlpha=.3+state.power*.65;c.fillStyle=gr;c.translate(W/2,H/2);c.rotate(-.29);c.fillRect(-W*1.5,-H*1.5,W*3,H*3);c.restore()}
-function drawGlow(c,H,t){if(!state.effects.glow)return;c.save();let val=.10+(.16+.08*Math.sin(t*Math.PI*2))*state.power;let gr=c.createRadialGradient(W*.52,H*.43,20,W*.52,H*.43,W*.72);gr.addColorStop(0,'rgba(255,255,255,0)');gr.addColorStop(.60,'rgba(255,255,255,0)');gr.addColorStop(1,rgba(state.accent,val));c.fillStyle=gr;c.fillRect(0,0,W,H);c.restore()}
+function drawGlow(c,H,t){
+ if(!state.effects.glow)return;
+ c.save();
+ // A visible breathing light, rather than the old nearly transparent edge-only gradient.
+ const pulse=(1+Math.sin(t*Math.PI*2-Math.PI/2))/2;
+ const strength=(.30+.62*pulse)*(.35+.65*state.power);
+ const r=getPhotoRect();
+ c.beginPath();roundedRect(c,r.x,r.y,r.w,r.h,10);c.clip();
+ c.globalCompositeOperation='screen';
+ const spots=[
+   [r.x+r.w*.27,r.y+r.h*.28,r.w*.72,'255,244,255',.45],
+   [r.x+r.w*.76,r.y+r.h*.66,r.w*.62,'255,225,245',.35],
+   [r.x+r.w*.52,r.y+r.h*.49,r.w*.83,'255,255,255',.22]
+ ];
+ for(const [x,y,rad,color,alpha] of spots){
+   const g=c.createRadialGradient(x,y,0,x,y,rad);
+   g.addColorStop(0,`rgba(${color},${Math.min(.95,alpha*strength)})`);
+   g.addColorStop(.48,`rgba(${color},${alpha*strength*.36})`);
+   g.addColorStop(1,`rgba(${color},0)`);
+   c.fillStyle=g;c.fillRect(r.x,r.y,r.w,r.h);
+ }
+ c.restore();
+}
 function bloomFlower(c,x,y,scale,col,rotation=0){
  c.save();c.translate(x,y);c.rotate(rotation);c.shadowColor=rgba(col,.22);c.shadowBlur=5*scale;
  for(let j=0;j<5;j++){c.save();c.rotate(j*Math.PI*2/5);c.fillStyle='#fffdfb';c.strokeStyle=rgba(col,.72);c.lineWidth=1.5*scale;c.beginPath();c.ellipse(0,-8*scale,5.8*scale,9.2*scale,0,0,Math.PI*2);c.fill();c.stroke();c.restore()}
@@ -191,13 +213,58 @@ function downloadBlob(blob,name){let url=URL.createObjectURL(blob),a=document.cr
 function renderedCanvas(scale,t){let out=document.createElement('canvas');out.width=Math.round(W*scale);out.height=Math.round(getH()*scale);let c=out.getContext('2d',{willReadFrequently:true});c.scale(scale,scale);drawScene(c,t,false);return out}
 function savePng(){try{let c=renderedCanvas(2,.45);c.toBlob(blob=>{if(blob){downloadBlob(blob,'DEARLY_Kira_Card.png');toast('PNG 포토카드를 저장했어요 💕')}else toast('PNG 저장에 실패했어요.')},'image/png')}catch(e){console.error(e);toast('이미지 저장에 실패했어요.')}}
 // GIF89a encoder: fixed 256-color 3-3-2 palette + LZW, no external libraries.
-function gifPalette(){let p=new Uint8Array(768);for(let i=0;i<256;i++){p[i*3]=Math.round(((i>>5)&7)*255/7);p[i*3+1]=Math.round(((i>>2)&7)*255/7);p[i*3+2]=Math.round((i&3)*255/3)}return p}
-function quantize(imageData,w,h){const data=imageData.data,idx=new Uint8Array(w*h),bayer=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5,9,1,11,3];for(let y=0;y<h;y++){let by=y*w;for(let x=0;x<w;x++){let i=by+x,j=i*4,dd=(bayer[(y&3)*4+(x&3)]-7.5)*2.0,r=clamp(data[j]+dd,0,255),g=clamp(data[j+1]+dd,0,255),b=clamp(data[j+2]+dd*1.8,0,255);idx[i]=((Math.round(r*7/255)&7)<<5)|((Math.round(g*7/255)&7)<<2)|(Math.round(b*3/255)&3)}}return idx}
+// Per-frame adaptive 256-color palette: preserves illustration colors without noisy ordered dithering.
+function adaptiveGifColors(imageData,w,h){
+ const d=imageData.data,hist=new Map();
+ for(let i=0;i<d.length;i+=16){
+  const key=((d[i]>>3)<<10)|((d[i+1]>>3)<<5)|(d[i+2]>>3);
+  hist.set(key,(hist.get(key)||0)+1);
+ }
+ const entries=Array.from(hist,([key,count])=>({r:((key>>10)&31)*8+4,g:((key>>5)&31)*8+4,b:(key&31)*8+4,count}));
+ let boxes=[entries];
+ while(boxes.length<256){
+  let best=-1,score=-1,axis='r';
+  for(let i=0;i<boxes.length;i++){
+   const box=boxes[i];if(box.length<2)continue;
+   const rr=box.map(p=>p.r),gg=box.map(p=>p.g),bb=box.map(p=>p.b);
+   const ranges=[Math.max(...rr)-Math.min(...rr),Math.max(...gg)-Math.min(...gg),Math.max(...bb)-Math.min(...bb)];
+   const max=Math.max(...ranges),weight=box.reduce((n,p)=>n+p.count,0);
+   if(max*weight>score){score=max*weight;best=i;axis=['r','g','b'][ranges.indexOf(max)]}
+  }
+  if(best<0)break;
+  const box=boxes.splice(best,1)[0].sort((x,y)=>x[axis]-y[axis]);
+  const total=box.reduce((n,p)=>n+p.count,0);let half=0,cut=1;
+  for(let i=0;i<box.length-1;i++){half+=box[i].count;if(half>=total/2){cut=i+1;break}}
+  boxes.push(box.slice(0,cut),box.slice(cut));
+ }
+ const palette=new Uint8Array(768),colors=[];
+ boxes.forEach((box,i)=>{
+  const total=box.reduce((n,p)=>n+p.count,0)||1;
+  const color=['r','g','b'].map(ch=>Math.round(box.reduce((n,p)=>n+p[ch]*p.count,0)/total));
+  colors.push(color);palette.set(color,i*3);
+ });
+ const lookup=new Int16Array(32768);lookup.fill(-1);
+ const indices=new Uint8Array(w*h);
+ for(let i=0;i<w*h;i++){
+  const j=i*4,r=d[j],g=d[j+1],b=d[j+2],key=((r>>3)<<10)|((g>>3)<<5)|(b>>3);
+  let chosen=lookup[key];
+  if(chosen<0){
+   let dist=Infinity;chosen=0;
+   for(let k=0;k<colors.length;k++){
+    const c=colors[k],dr=r-c[0],dg=g-c[1],db=b-c[2],v=dr*dr+dg*dg+db*db;
+    if(v<dist){dist=v;chosen=k}
+   }
+   lookup[key]=chosen;
+  }
+  indices[i]=chosen;
+ }
+ return {indices,palette};
+}
 function lzwGif(indexes){const output=[],dict=new Map();let codeSize=9,next=258,buffer=0,bits=0;const write=(code)=>{buffer|=code<<bits;bits+=codeSize;while(bits>=8){output.push(buffer&255);buffer>>>=8;bits-=8}};write(256);let prefix=indexes[0];for(let i=1;i<indexes.length;i++){let v=indexes[i],k=prefix*256+v,found=dict.get(k);if(found!==undefined){prefix=found;continue}write(prefix);if(next<4096){dict.set(k,next++);if(next===((1<<codeSize)+1)&&codeSize<12)codeSize++}else{write(256);dict.clear();codeSize=9;next=258}prefix=v}write(prefix);write(257);if(bits>0)output.push(buffer&255);return new Uint8Array(output)}
 function word(n){return[n&255,(n>>8)&255]}
-function gifFrame(indices,w,h,delay){const compressed=lzwGif(indices),part=[0x21,0xF9,0x04,0x00,...word(delay),0,0,0x2C,0,0,0,0,...word(w),...word(h),0,8],chunks=[new Uint8Array(part)];for(let offset=0;offset<compressed.length;offset+=255){let piece=compressed.subarray(offset,offset+255);chunks.push(new Uint8Array([piece.length]),piece)}chunks.push(new Uint8Array([0]));return chunks}
+function gifFrame(indices,palette,w,h,delay){const compressed=lzwGif(indices),part=[0x21,0xF9,0x04,0x00,...word(delay),0,0,0x2C,0,0,0,0,...word(w),...word(h),0x87,8],chunks=[new Uint8Array(part),palette];for(let offset=0;offset<compressed.length;offset+=255){let piece=compressed.subarray(offset,offset+255);chunks.push(new Uint8Array([piece.length]),piece)}chunks.push(new Uint8Array([0]));return chunks}
 function setProgress(msg,percent){$('status').textContent=msg;$('gifProgress').style.display='block';$('gifBar').style.width=percent+'%'}
-async function saveGif(){if(working)return;working=true;const btn=$('gifDownload');btn.disabled=true;btn.textContent='GIF 만들고 있어요 ✨';let previous=state.selected;state.selected=null;try{let scale=.75,ww=Math.round(W*scale),hh=Math.round(getH()*scale),count=16,delay=13,parts=[new Uint8Array([71,73,70,56,57,97,...word(ww),...word(hh),0xF7,0,0]),gifPalette(),new Uint8Array([0x21,0xFF,0x0B,78,69,84,83,67,65,80,69,50,46,48,0x03,0x01,0,0,0])];for(let i=0;i<count;i++){setProgress(`움직이는 카드 제작 중... ${i+1}/${count}`,Math.round((i/count)*96));await new Promise(resolve=>setTimeout(resolve,0));let cnv=renderedCanvas(scale,i/count),img=cnv.getContext('2d',{willReadFrequently:true}).getImageData(0,0,ww,hh),pixels=quantize(img,ww,hh);parts.push(...gifFrame(pixels,ww,hh,delay))}parts.push(new Uint8Array([0x3B]));const blob=new Blob(parts,{type:'image/gif'});setProgress('완성! 다운로드를 시작해요 ♡',100);downloadBlob(blob,'DEARLY_Kira_Animated.gif');toast('움직이는 GIF 포토카드를 저장했어요! ✨')}catch(err){console.error(err);$('status').textContent='저장 중 오류가 생겼어요. 다시 시도해 주세요.';toast('GIF 저장에 실패했어요.')}finally{state.selected=previous;working=false;btn.disabled=false;btn.textContent='움직이는 GIF 저장 ✧';setTimeout(()=>{$('gifProgress').style.display='none'},1800)}}
+async function saveGif(){if(working)return;working=true;const btn=$('gifDownload');btn.disabled=true;btn.textContent='GIF 만들고 있어요 ✨';let previous=state.selected;state.selected=null;try{let scale=.75,ww=Math.round(W*scale),hh=Math.round(getH()*scale),count=16,delay=13,parts=[new Uint8Array([71,73,70,56,57,97,...word(ww),...word(hh),0x70,0,0]),new Uint8Array([0x21,0xFF,0x0B,78,69,84,83,67,65,80,69,50,46,48,0x03,0x01,0,0,0])];for(let i=0;i<count;i++){setProgress(`움직이는 카드 제작 중... ${i+1}/${count}`,Math.round((i/count)*96));await new Promise(resolve=>setTimeout(resolve,0));let cnv=renderedCanvas(scale,i/count),img=cnv.getContext('2d',{willReadFrequently:true}).getImageData(0,0,ww,hh),{indices,palette}=adaptiveGifColors(img,ww,hh);parts.push(...gifFrame(indices,palette,ww,hh,delay))}parts.push(new Uint8Array([0x3B]));const blob=new Blob(parts,{type:'image/gif'});setProgress('완성! 다운로드를 시작해요 ♡',100);downloadBlob(blob,'DEARLY_Kira_Animated.gif');toast('움직이는 GIF 포토카드를 저장했어요! ✨')}catch(err){console.error(err);$('status').textContent='저장 중 오류가 생겼어요. 다시 시도해 주세요.';toast('GIF 저장에 실패했어요.')}finally{state.selected=previous;working=false;btn.disabled=false;btn.textContent='움직이는 GIF 저장 ✧';setTimeout(()=>{$('gifProgress').style.display='none'},1800)}}
 function saveProject(){const copy={...state,selected:null};downloadBlob(new Blob([JSON.stringify({app:'DEARLY Kira Maker',version:'1.2',state:copy},null,2)],{type:'application/json'}),'DEARLY_Kira_Project.json');toast('작업 파일을 저장했어요 📁')}
 async function loadProject(file){if(!file)return;try{let obj=JSON.parse(await file.text());if(obj.app!=='DEARLY Kira Maker'||!obj.state||!Array.isArray(obj.state.stickers)||!Array.isArray(obj.state.texts))throw Error('invalid project');state={...initial(),...obj.state,selected:null,effects:{...initial().effects,...obj.state.effects}};if(!['3:4','2:3','1:1'].includes(state.ratio))state.ratio='3:4';if(state.frame==='lace')state.frame='gingham';if(state.frame==='ribbon')state.frame='bloom';if(!frames.some(x=>x[0]===state.frame))state.frame='bloom';if(typeof state.polaroidCaption!=='string')state.polaroidCaption='sweetest memory ♡';state.polaroidCaption=state.polaroidCaption.slice(0,44);state.customAssets=Array.isArray(state.customAssets)?state.customAssets.filter(x=>x&&typeof x.data==='string'&&x.data.startsWith('data:image/png;base64,')).slice(0,30):[];for(const t of state.texts)ensureFont(t.font||state.font);for(const st of state.stickers){if(st.imageData)getStickerImage(st.imageData)}uid=Math.max(0,...state.stickers.map(x=>Number(x.id)||0),...state.texts.map(x=>Number(x.id)||0));await loadImageData(state.imageData);syncControls();toast('이전 작업을 불러왔어요! 💗')}catch(err){console.error(err);toast('올바른 Kira Maker 작업 파일이 아니에요.')}}
 // Buttons and settings
