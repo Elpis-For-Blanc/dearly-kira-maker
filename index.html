@@ -252,7 +252,7 @@ function selectedAction(action){let obj=getSelected();if(!obj)return;let arr=obj
 function downloadBlob(blob,name){let url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000)}
 function renderedCanvas(scale,t){let out=document.createElement('canvas');out.width=Math.round(W*scale);out.height=Math.round(getH()*scale);let c=out.getContext('2d',{willReadFrequently:true});c.scale(scale,scale);drawScene(c,t,false);return out}
 function savePng(){try{let c=renderedCanvas(2,.45);c.toBlob(blob=>{if(blob){downloadBlob(blob,'DEARLY_Kira_Card.png');toast('PNG 포토카드를 저장했어요 💕')}else toast('PNG 저장에 실패했어요.')},'image/png')}catch(e){console.error(e);toast('이미지 저장에 실패했어요.')}}
-// GIF89a encoder: fixed 256-color 3-3-2 palette + LZW, no external libraries.
+// GIF89a encoder: each image descriptor, then its local palette, then LZW min code size, then image data.
 // Per-frame adaptive 256-color palette: preserves illustration colors without noisy ordered dithering.
 function adaptiveGifColors(imageData,w,h){
  const d=imageData.data,hist=new Map();
@@ -300,9 +300,36 @@ function adaptiveGifColors(imageData,w,h){
  }
  return {indices,palette};
 }
-function lzwGif(indexes){const output=[],dict=new Map();let codeSize=9,next=258,buffer=0,bits=0;const write=(code)=>{buffer|=code<<bits;bits+=codeSize;while(bits>=8){output.push(buffer&255);buffer>>>=8;bits-=8}};write(256);let prefix=indexes[0];for(let i=1;i<indexes.length;i++){let v=indexes[i],k=prefix*256+v,found=dict.get(k);if(found!==undefined){prefix=found;continue}write(prefix);if(next<4096){dict.set(k,next++);if(next===((1<<codeSize)+1)&&codeSize<12)codeSize++}else{write(256);dict.clear();codeSize=9;next=258}prefix=v}write(prefix);write(257);if(bits>0)output.push(buffer&255);return new Uint8Array(output)}
+// Stable GIF LZW encoding. Keep a 9-bit code stream and reset the dictionary
+// before a code-size transition. This deliberately trades a little file size for
+// reliable playback in mobile image viewers, Chrome, Safari and other decoders.
+function lzwGif(indexes){
+ const output=[];
+ let bitBuffer=0,bits=0;
+ const write=(code)=>{
+  bitBuffer|=(code&511)<<bits; bits+=9;
+  while(bits>=8){output.push(bitBuffer&255);bitBuffer>>>=8;bits-=8;}
+ };
+ const CLEAR=256,END=257;
+ let dictionary=new Map(),nextCode=258;
+ write(CLEAR);
+ if(!indexes.length){write(END);if(bits)output.push(bitBuffer&255);return new Uint8Array(output)}
+ let prefix=indexes[0];
+ for(let i=1;i<indexes.length;i++){
+  const value=indexes[i],key=prefix*256+value;
+  const found=dictionary.get(key);
+  if(found!==undefined){prefix=found;continue}
+  write(prefix);
+  if(nextCode<505){dictionary.set(key,nextCode++);}
+  else{write(CLEAR);dictionary=new Map();nextCode=258;}
+  prefix=value;
+ }
+ write(prefix);write(END);
+ if(bits>0)output.push(bitBuffer&255);
+ return new Uint8Array(output);
+}
 function word(n){return[n&255,(n>>8)&255]}
-function gifFrame(indices,palette,w,h,delay){const compressed=lzwGif(indices),part=[0x21,0xF9,0x04,0x00,...word(delay),0,0,0x2C,0,0,0,0,...word(w),...word(h),0x87,8],chunks=[new Uint8Array(part),palette];for(let offset=0;offset<compressed.length;offset+=255){let piece=compressed.subarray(offset,offset+255);chunks.push(new Uint8Array([piece.length]),piece)}chunks.push(new Uint8Array([0]));return chunks}
+function gifFrame(indices,palette,w,h,delay){const compressed=lzwGif(indices),part=[0x21,0xF9,0x04,0x00,...word(delay),0,0,0x2C,0,0,0,0,...word(w),...word(h),0x87],chunks=[new Uint8Array(part),palette,new Uint8Array([8])];for(let offset=0;offset<compressed.length;offset+=255){let piece=compressed.subarray(offset,offset+255);chunks.push(new Uint8Array([piece.length]),piece)}chunks.push(new Uint8Array([0]));return chunks}
 function setProgress(msg,percent){$('status').textContent=msg;$('gifProgress').style.display='block';$('gifBar').style.width=percent+'%'}
 async function saveGif(){if(working)return;working=true;const btn=$('gifDownload');btn.disabled=true;btn.textContent='GIF 만들고 있어요 ✨';let previous=state.selected;state.selected=null;try{let scale=.75,ww=Math.round(W*scale),hh=Math.round(getH()*scale),count=16,delay=13,parts=[new Uint8Array([71,73,70,56,57,97,...word(ww),...word(hh),0x70,0,0]),new Uint8Array([0x21,0xFF,0x0B,78,69,84,83,67,65,80,69,50,46,48,0x03,0x01,0,0,0])];for(let i=0;i<count;i++){setProgress(`움직이는 카드 제작 중... ${i+1}/${count}`,Math.round((i/count)*96));await new Promise(resolve=>setTimeout(resolve,0));let cnv=renderedCanvas(scale,i/count),img=cnv.getContext('2d',{willReadFrequently:true}).getImageData(0,0,ww,hh),{indices,palette}=adaptiveGifColors(img,ww,hh);parts.push(...gifFrame(indices,palette,ww,hh,delay))}parts.push(new Uint8Array([0x3B]));const blob=new Blob(parts,{type:'image/gif'});setProgress('완성! 다운로드를 시작해요 ♡',100);downloadBlob(blob,'DEARLY_Kira_Animated.gif');toast('움직이는 GIF 포토카드를 저장했어요! ✨')}catch(err){console.error(err);$('status').textContent='저장 중 오류가 생겼어요. 다시 시도해 주세요.';toast('GIF 저장에 실패했어요.')}finally{state.selected=previous;working=false;btn.disabled=false;btn.textContent='움직이는 GIF 저장 ✧';setTimeout(()=>{$('gifProgress').style.display='none'},1800)}}
 function saveProject(){const copy={...state,selected:null};downloadBlob(new Blob([JSON.stringify({app:'DEARLY Kira Maker',version:'1.2',state:copy},null,2)],{type:'application/json'}),'DEARLY_Kira_Project.json');toast('작업 파일을 저장했어요 📁')}
